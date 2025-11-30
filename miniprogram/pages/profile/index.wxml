@@ -1,0 +1,114 @@
+<!--pages/profile/index.wxml-->
+<view class="profile-container">
+  <!-- 用户信息卡片 -->
+  <view class="user-card">
+    <view class="user-info">
+      <image class="user-avatar" src="{{userInfo.avatarUrl || '/images/avatar.png'}}" mode="aspectFill" />
+      <view class="user-details">
+        <text class="user-name">{{userInfo.nickName || '点击登录'}}</text>
+        <text class="user-stats" wx:if="{{isLogin}}">累计练习 {{totalDays}} 天</text>
+      </view>
+    </view>
+    <button class="login-btn" wx:if="{{!isLogin}}" bindtap="login">
+      <t-icon name="user" size="32rpx" color="#4A90E2" />
+    </button>
+  </view>
+
+  <!-- 学习统计 -->
+  <view class="stats-card" wx:if="{{isLogin}}">
+    <view class="stats-title">学习统计</view>
+    <view class="stats-grid">
+      <view class="stat-box">
+        <text class="stat-value color-primary">{{totalQuestions}}</text>
+        <text class="stat-label">总练习题数</text>
+      </view>
+      <view class="stat-box">
+        <text class="stat-value color-secondary">{{avgCorrectRate}}%</text>
+        <text class="stat-label">平均正确率</text>
+      </view>
+      <view class="stat-box">
+        <text class="stat-value color-success">{{totalHours}}</text>
+        <text class="stat-label">练习时长(小时)</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能列表 -->
+  <view class="function-section">
+    <t-cell-group>
+      <t-cell 
+        title="PDF设置" 
+        left-icon="setting" 
+        arrow 
+        bindtap="goToSetting"
+        data-type="pdf"
+      />
+      <t-cell 
+        title="音效开关" 
+        left-icon="sound"
+      >
+        <switch 
+          slot="note" 
+          checked="{{soundEnabled}}" 
+          bindchange="toggleSound"
+          color="#4A90E2"
+        />
+      </t-cell>
+      <t-cell 
+        title="震动反馈" 
+        left-icon="notification"
+      >
+        <switch 
+          slot="note" 
+          checked="{{vibrateEnabled}}" 
+          bindchange="toggleVibrate"
+          color="#4A90E2"
+        />
+      </t-cell>
+    </t-cell-group>
+  </view>
+
+  <view class="function-section">
+    <t-cell-group>
+      <t-cell 
+        title="关于我们" 
+        left-icon="info-circle" 
+        arrow 
+        bindtap="goToAbout"
+      />
+      <t-cell 
+        title="用户协议" 
+        left-icon="file-text" 
+        arrow 
+        bindtap="goToAgreement"
+      />
+      <t-cell 
+        title="隐私政策" 
+        left-icon="lock-on" 
+        arrow 
+        bindtap="goToPrivacy"
+      />
+      <t-cell 
+        title="反馈与帮助" 
+        left-icon="chat" 
+        arrow 
+        bindtap="goToFeedback"
+      />
+    </t-cell-group>
+  </view>
+
+  <!-- 版本信息 -->
+  <view class="version-info">
+    <text class="version-text">小学口算助手 v1.0.0</text>
+  </view>
+
+  <!-- 退出登录按钮 -->
+  <view class="logout-section" wx:if="{{isLogin}}">
+    <button class="btn btn-large" style="background: #F8F9FA; color: #E74C3C;" bindtap="logout">
+      退出登录
+    </button>
+  </view>
+</view>
+
+<t-dialog id="t-dialog" />
+<t-message id="t-message" />

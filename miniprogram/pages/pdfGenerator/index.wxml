@@ -1,0 +1,178 @@
+<!--pages/pdfGenerator/index.wxml-->
+<view class="pdf-generator-container">
+  <!-- 顶部标题 -->
+  <view class="page-header">
+    <view class="header-content">
+      <t-icon name="file-pdf" size="56rpx" color="#E74C3C" />
+      <text class="header-title">生成试卷</text>
+    </view>
+    <text class="header-subtitle">自定义设置，生成专属练习题</text>
+  </view>
+
+  <!-- 配置区域 -->
+  <view class="config-section">
+    <!-- 试卷标题 -->
+    <view class="config-item">
+      <view class="config-label">
+        <t-icon name="edit" size="32rpx" color="#4A90E2" />
+        <text class="label-text">试卷标题</text>
+      </view>
+      <t-input
+        value="{{paperTitle}}"
+        placeholder="请输入试卷标题"
+        bindinput="onTitleInput"
+        maxlength="30"
+      />
+    </view>
+
+    <!-- 年级选择 -->
+    <view class="config-item">
+      <view class="config-label">
+        <t-icon name="education" size="32rpx" color="#4A90E2" />
+        <text class="label-text">选择年级</text>
+      </view>
+      <t-radio-group value="{{selectedGrade}}" bindchange="onGradeChange">
+        <view class="radio-group">
+          <t-radio
+            wx:for="{{gradeOptions}}"
+            wx:key="value"
+            value="{{item.value}}"
+            label="{{item.label}}"
+            class="radio-item"
+          />
+        </view>
+      </t-radio-group>
+    </view>
+
+    <!-- 题型选择 -->
+    <view class="config-item">
+      <view class="config-label">
+        <t-icon name="calculation" size="32rpx" color="#4A90E2" />
+        <text class="label-text">题型选择</text>
+        <text class="label-hint">(多选)</text>
+      </view>
+      <view class="category-grid">
+        <view
+          wx:for="{{categoryOptions}}"
+          wx:key="value"
+          class="category-item {{selectedCategories.indexOf(item.value) > -1 ? 'category-item-active' : ''}}"
+          bindtap="onCategoryToggle"
+          data-category="{{item.value}}"
+        >
+          <!-- 选中标识 -->
+          <view wx:if="{{selectedCategories.indexOf(item.value) > -1}}" class="category-check-badge">
+            <text class="check-icon">✓</text>
+          </view>
+          
+          <t-icon 
+            name="{{item.icon}}" 
+            size="40rpx" 
+            color="{{selectedCategories.indexOf(item.value) > -1 ? '#FFFFFF' : '#4A90E2'}}" 
+          />
+          <text class="category-label">{{item.label}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 题目数量 -->
+    <view class="config-item">
+      <view class="config-label">
+        <t-icon name="format-horizontal-align-center" size="32rpx" color="#4A90E2" />
+        <text class="label-text">题目数量</text>
+      </view>
+      <t-stepper
+        value="{{questionCount}}"
+        min="10"
+        max="200"
+        step="10"
+        bindchange="onQuestionCountChange"
+        theme="filled"
+      />
+    </view>
+
+    <!-- 列数选择 -->
+    <view class="config-item">
+      <view class="config-label">
+        <t-icon name="view-column" size="32rpx" color="#4A90E2" />
+        <text class="label-text">排版列数</text>
+      </view>
+      <t-radio-group value="{{columnCount}}" bindchange="onColumnCountChange">
+        <view class="radio-group horizontal">
+          <t-radio
+            wx:for="{{columnOptions}}"
+            wx:key="value"
+            value="{{item.value}}"
+            label="{{item.label}}"
+            class="radio-item"
+          />
+        </view>
+      </t-radio-group>
+    </view>
+
+    <!-- 显示答案 -->
+    <view class="config-item">
+      <view class="config-label">
+        <t-icon name="check-circle" size="32rpx" color="#4A90E2" />
+        <text class="label-text">显示答案</text>
+      </view>
+      <t-switch
+        value="{{showAnswer}}"
+        bindchange="onShowAnswerChange"
+      />
+    </view>
+  </view>
+
+  <!-- 预览提示 -->
+  <view class="preview-hint">
+    <t-icon name="info-circle" size="28rpx" color="#FF6B35" />
+    <text class="hint-text">试卷将以A4纸尺寸生成，保存后可打印</text>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-section">
+    <button 
+      class="btn btn-primary btn-generate"
+      bindtap="generatePaper"
+      loading="{{generating}}"
+      disabled="{{generating}}"
+    >
+      <t-icon name="{{generating ? 'loading' : 'file-add'}}" size="40rpx" color="#FFFFFF" />
+      <text>{{generating ? '生成中...' : '立即生成试卷'}}</text>
+    </button>
+  </view>
+
+  <!-- 使用说明 -->
+  <view class="instruction-section">
+    <view class="instruction-title">
+      <t-icon name="help-circle" size="32rpx" color="#95A5A6" />
+      <text>使用说明</text>
+    </view>
+    <view class="instruction-list">
+      <view class="instruction-item">
+        <text class="instruction-index">1</text>
+        <text class="instruction-text">选择年级和题型，系统将根据难度自动生成</text>
+      </view>
+      <view class="instruction-item">
+        <text class="instruction-index">2</text>
+        <text class="instruction-text">调整题目数量和排版列数，优化打印效果</text>
+      </view>
+      <view class="instruction-item">
+        <text class="instruction-index">3</text>
+        <text class="instruction-text">点击生成后，试卷将自动保存到相册</text>
+      </view>
+      <view class="instruction-item">
+        <text class="instruction-index">4</text>
+        <text class="instruction-text">可以预览后打印，建议使用A4纸张</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 隐藏的Canvas用于生成PDF -->
+  <canvas 
+    type="2d" 
+    id="pdfCanvas" 
+    style="position: fixed; top: -9999px; left: -9999px; width: 595px; height: 842px;"
+  ></canvas>
+</view>
+
+<t-message id="t-message" />

@@ -1,0 +1,574 @@
+/* pages/home/index.wxss */
+.home-container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #E8F4FD 0%, #F8F9FA 400rpx);
+  padding: 32rpx;
+  padding-bottom: 120rpx;
+}
+
+/* 欢迎区 */
+.welcome-section {
+  margin-bottom: 24rpx;
+  padding: 24rpx 0;
+}
+
+.welcome-text {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #2C3E50;
+  margin-bottom: 12rpx;
+}
+
+.greeting {
+  color: #2C3E50;
+}
+
+.username {
+  color: #4A90E2;
+}
+
+.welcome-subtitle {
+  font-size: 28rpx;
+  color: #95A5A6;
+}
+
+/* 年级选择区 - 优化版 */
+.grade-selector-section-new {
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.grade-selector-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.grade-selector-header t-icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  position: relative;
+  top: 1rpx;
+}
+
+.grade-selector-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #2C3E50;
+  margin-left: 12rpx;
+  display: inline;
+  vertical-align: middle;
+  line-height: 1.2;
+}
+
+.grade-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16rpx;
+}
+
+.grade-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx 16rpx;
+  background: #F8F9FA;
+  border: 3rpx solid #E8E8E8;
+  border-radius: 12rpx;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.grade-btn:active {
+  transform: scale(0.95);
+}
+
+.grade-btn-active {
+  background: linear-gradient(135deg, #4A90E2, #5BA3F5);
+  border-color: #4A90E2;
+  box-shadow: 0 4rpx 12rpx rgba(74, 144, 226, 0.3);
+}
+
+.grade-btn-number {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #2C3E50;
+  margin-bottom: 4rpx;
+}
+
+.grade-btn-active .grade-btn-number {
+  color: #FFFFFF;
+}
+
+.grade-btn-text {
+  font-size: 24rpx;
+  color: #95A5A6;
+  font-weight: 500;
+}
+
+.grade-btn-active .grade-btn-text {
+  color: #FFFFFF;
+}
+
+/* 题目数量选择区 */
+.question-count-section {
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.count-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.count-header t-icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  position: relative;
+  top: 1rpx;
+}
+
+.count-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #2C3E50;
+  margin-left: 12rpx;
+  display: inline;
+  vertical-align: middle;
+  line-height: 1.2;
+}
+
+.count-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16rpx;
+}
+
+.count-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx 12rpx;
+  background: #F8F9FA;
+  border: 3rpx solid #E8E8E8;
+  border-radius: 12rpx;
+  transition: all 0.3s;
+}
+
+.count-btn:active {
+  transform: scale(0.95);
+}
+
+.count-btn-active {
+  background: linear-gradient(135deg, #FF6B35, #FF8C5A);
+  border-color: #FF6B35;
+  box-shadow: 0 4rpx 12rpx rgba(255, 107, 53, 0.3);
+}
+
+.count-btn-number {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #2C3E50;
+  margin-bottom: 4rpx;
+}
+
+.count-btn-active .count-btn-number {
+  color: #FFFFFF;
+}
+
+.count-btn-label {
+  font-size: 22rpx;
+  color: #95A5A6;
+  font-weight: 500;
+}
+
+.count-btn-active .count-btn-label {
+  color: #FFFFFF;
+}
+
+.count-btn-custom {
+  padding: 16rpx 12rpx;
+}
+
+/* 自定义数量输入 */
+.custom-count-input {
+  margin-top: 24rpx;
+  padding: 24rpx;
+  background: #F8F9FA;
+  border-radius: 12rpx;
+  border: 2rpx dashed #4A90E2;
+}
+
+.custom-count-actions {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 16rpx;
+}
+
+.btn-cancel,
+.btn-confirm {
+  flex: 1;
+  height: 72rpx;
+  line-height: 72rpx;
+  text-align: center;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  border: none;
+}
+
+.btn-cancel {
+  background: #FFFFFF;
+  color: #95A5A6;
+  border: 2rpx solid #E8E8E8;
+}
+
+.btn-confirm {
+  background: linear-gradient(135deg, #4A90E2, #5BA3F5);
+  color: #FFFFFF;
+}
+
+.btn-cancel:active {
+  opacity: 0.7;
+}
+
+.btn-confirm:active {
+  opacity: 0.8;
+}
+
+/* 旧的年级选择区 - 移除 */
+.grade-selector-section {
+  display: none;
+}
+
+.grade-selector-label {
+  display: none;
+}
+
+.grade-selector-btn {
+  display: none;
+}
+
+.grade-selector-text {
+  display: none;
+}
+
+/* 卡片通用样式 */
+.card {
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+/* 统一所有卡片标题样式 - 与题目数量卡片保持一致 */
+.card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.card-header t-icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  position: relative;
+  top: 1rpx;
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #2C3E50;
+  margin-left: 12rpx;
+  display: inline;
+  vertical-align: middle;
+  line-height: 1.2;
+}
+
+.card-subtitle {
+  font-size: 24rpx;
+  color: #95A5A6;
+  margin-left: 8rpx;
+  display: inline;
+  vertical-align: middle;
+  line-height: 1.2;
+}
+
+/* 口算练习卡片 */
+.practice-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20rpx;
+}
+
+.practice-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32rpx 16rpx;
+  background: linear-gradient(135deg, #E8F4FD 0%, #D4E9F9 100%);
+  border-radius: 12rpx;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.practice-btn:active {
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+
+.practice-btn-text {
+  font-size: 24rpx;
+  color: #2C3E50;
+  font-weight: 500;
+  margin-top: 8rpx;
+}
+
+.practice-btn-difficulty {
+  font-size: 18rpx;
+  margin-top: 4rpx;
+}
+
+.empty-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60rpx 0;
+  gap: 12rpx;
+}
+
+.empty-hint t-icon {
+  flex-shrink: 0;
+}
+
+.empty-text {
+  font-size: 24rpx;
+  color: #95A5A6;
+  text-align: center;
+}
+
+/* 数的分解与组合卡片 */
+.decompose-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+}
+
+.feature-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32rpx 24rpx;
+  border-radius: 12rpx;
+  transition: all 0.3s;
+}
+
+.feature-btn:active {
+  transform: scale(0.95);
+  opacity: 0.9;
+}
+
+.feature-btn-content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12rpx;
+}
+
+.feature-btn-content t-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  flex-shrink: 0;
+  position: relative;
+  top: 0rpx;
+}
+
+.feature-btn-text {
+  font-size: 28rpx;
+  color: #FFFFFF;
+  font-weight: 600;
+  margin-left: 12rpx;
+  display: inline;
+  vertical-align: middle;
+  line-height: 1.2;
+}
+
+.feature-btn-desc {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* 单位换算卡片 */
+.unit-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16rpx;
+}
+
+.unit-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28rpx 12rpx;
+  background: #F8F9FA;
+  border-radius: 12rpx;
+  border: 2rpx solid #E8E8E8;
+  transition: all 0.3s;
+  min-height: 120rpx;
+}
+
+.unit-btn:active {
+  transform: scale(0.95);
+  border-color: #4A90E2;
+  background: #E8F4FD;
+}
+
+.unit-btn t-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.unit-btn-text {
+  font-size: 24rpx;
+  color: #2C3E50;
+  margin-top: 12rpx;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* PDF卡片 */
+.pdf-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pdf-desc {
+  font-size: 28rpx;
+  color: #95A5A6;
+  line-height: 1.6;
+  margin-bottom: 8rpx;
+  text-align: center;
+}
+
+/* 统计区域 */
+.stats-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-number {
+  font-size: 48rpx;
+  font-weight: 700;
+  margin-bottom: 8rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #95A5A6;
+}
+
+.stat-divider {
+  width: 1rpx;
+  height: 60rpx;
+  background: #E8E8E8;
+}
+
+/* 通用按钮样式 */
+.btn {
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+.btn::after {
+  border: none;
+}
+
+.btn:active {
+  opacity: 0.8;
+  transform: scale(0.98);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #E74C3C 0%, #EC7063 100%);
+  color: #FFFFFF;
+}
+
+.btn-large {
+  width: 100%;
+  height: 88rpx;
+  line-height: 88rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.mt-16 {
+  margin-top: 16rpx;
+}
+
+/* 背景色工具类 */
+.bg-success {
+  background: linear-gradient(135deg, #27AE60 0%, #2ECC71 100%);
+  box-shadow: 0 4rpx 12rpx rgba(39, 174, 96, 0.3);
+}
+
+/* 颜色工具类 */
+.color-primary {
+  color: #4A90E2;
+}
+
+.color-secondary {
+  color: #FF6B35;
+}
+
+.color-success {
+  color: #27AE60;
+}
+

@@ -1,0 +1,86 @@
+<!--pages/mistakes/index.wxml-->
+<view class="mistakes-container">
+  <!-- 顶部筛选栏 -->
+  <view class="filter-bar">
+    <scroll-view class="filter-scroll" scroll-x>
+      <view class="filter-tags">
+        <view 
+          class="filter-tag {{currentFilter === item.value ? 'active' : ''}}"
+          wx:for="{{filterOptions}}"
+          wx:key="value"
+          bindtap="changeFilter"
+          data-value="{{item.value}}"
+        >
+          {{item.label}}
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 错题列表 -->
+  <view class="mistakes-list" wx:if="{{mistakesList.length > 0}}">
+    <view class="mistake-card" wx:for="{{mistakesList}}" wx:key="id">
+      <view class="mistake-header">
+        <view class="mistake-type badge badge-{{item.typeColor}}">{{item.typeName}}</view>
+        <text class="mistake-date">{{item.createDate}}</text>
+      </view>
+      
+      <view class="mistake-content">
+        <view class="mistake-question">
+          <text class="question-text">{{item.question}}</text>
+        </view>
+        
+        <view class="mistake-answer">
+          <view class="answer-item">
+            <text class="answer-label">你的答案：</text>
+            <text class="answer-wrong">{{item.userAnswer}}</text>
+          </view>
+          <t-icon name="arrow-right" size="32rpx" color="#95A5A6" />
+          <view class="answer-item">
+            <text class="answer-label">正确答案：</text>
+            <text class="answer-correct">{{item.correctAnswer}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="mistake-actions">
+        <button class="action-btn btn-retry" bindtap="retryQuestion" data-id="{{item.id}}">
+          <t-icon name="refresh" size="32rpx" color="#4A90E2" />
+          重练
+        </button>
+        <button class="action-btn btn-master" bindtap="markMastered" data-id="{{item.id}}">
+          <t-icon name="check-circle" size="32rpx" color="#27AE60" />
+          已掌握
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:else>
+    <t-empty icon="error-circle" description="暂无错题记录" />
+    <button class="btn btn-primary btn-medium mt-32" bindtap="goToPractice">
+      去练习
+    </button>
+  </view>
+
+  <!-- 底部批量操作栏 -->
+  <view class="batch-actions" wx:if="{{mistakesList.length > 0}}">
+    <view class="batch-left">
+      <checkbox-group bindchange="selectAll">
+        <label class="select-all-label">
+          <checkbox value="all" checked="{{isSelectAll}}" />
+          <text class="select-all-text">全选</text>
+        </label>
+      </checkbox-group>
+      <text class="selected-count">已选 {{selectedCount}} 题</text>
+    </view>
+    <view class="batch-btns">
+      <button class="batch-btn" bindtap="generatePractice">生成练习卷</button>
+      <button class="batch-btn batch-btn-danger" bindtap="batchDelete">删除</button>
+    </view>
+  </view>
+</view>
+
+<t-dialog id="t-dialog" />
+<t-message id="t-message" />

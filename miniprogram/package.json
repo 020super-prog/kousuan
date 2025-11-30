@@ -1,0 +1,18 @@
+{
+  "name": "kousuan-miniprogram",
+  "version": "1.0.0",
+  "description": "口算小程序项目",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "miniprogram",
+    "tdesign"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "tdesign-miniprogram": "^1.5.0"
+  }
+}

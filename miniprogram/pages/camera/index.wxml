@@ -1,0 +1,42 @@
+<!--pages/camera/index.wxml-->
+<view class="camera-container">
+  <view class="camera-header">
+    <text class="page-title">拍照批改</text>
+    <text class="page-subtitle">拍摄作业，智能批改</text>
+  </view>
+
+  <view class="camera-guide">
+    <view class="guide-image">
+      <t-icon name="camera" size="120rpx" color="#4A90E2" />
+    </view>
+    <text class="guide-text">将作业放入取景框内</text>
+    <text class="guide-tips">确保光线充足、作业清晰</text>
+  </view>
+
+  <view class="camera-actions">
+    <button class="btn btn-primary btn-large" bindtap="takePhoto">
+      <t-icon name="camera" size="40rpx" color="#FFFFFF" style="margin-right: 16rpx;" />
+      拍照批改
+    </button>
+    <button class="btn btn-large mt-24" style="background: #F8F9FA; color: #2C3E50;" bindtap="chooseImage">
+      <t-icon name="image" size="40rpx" color="#2C3E50" style="margin-right: 16rpx;" />
+      从相册选择
+    </button>
+  </view>
+
+  <view class="history-section" wx:if="{{historyList.length > 0}}">
+    <view class="section-title">批改历史</view>
+    <view class="history-list">
+      <view class="history-item" wx:for="{{historyList}}" wx:key="id" bindtap="viewHistory" data-id="{{item.id}}">
+        <image class="history-thumb" src="{{item.thumbnail}}" mode="aspectFill" />
+        <view class="history-info">
+          <text class="history-date">{{item.date}}</text>
+          <text class="history-stats">正确率: {{item.correctRate}}%</text>
+        </view>
+        <t-icon name="chevron-right" size="32rpx" color="#95A5A6" />
+      </view>
+    </view>
+  </view>
+</view>
+
+<t-message id="t-message" />

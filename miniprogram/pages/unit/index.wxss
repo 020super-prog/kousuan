@@ -1,0 +1,272 @@
+/* pages/unit/index.wxss */
+.unit-container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #E8F4FD 0%, #F8F9FA 400rpx);
+  padding: 32rpx;
+  box-sizing: border-box;
+}
+
+/* 顶部信息栏 */
+.practice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 24rpx 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.progress-info, .unit-type-info, .time-info {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.progress-text {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #4A90E2;
+}
+
+.unit-type-text {
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.time-text {
+  font-size: 28rpx;
+  color: #FF6B35;
+  font-weight: 500;
+}
+
+/* 题目展示区 */
+.question-display {
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 60rpx 40rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
+  min-height: 400rpx;
+}
+
+.question-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48rpx;
+}
+
+.question-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.question-label {
+  font-size: 32rpx;
+  color: #2C3E50;
+  font-weight: 500;
+}
+
+/* 换算展示 */
+.conversion-display {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  width: 100%;
+  justify-content: center;
+  flex-wrap: nowrap;
+}
+
+.conversion-display.complex {
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.conversion-part {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.conversion-part.source {
+  background: linear-gradient(135deg, #4A90E2 0%, #5BA3F5 100%);
+  padding: 20rpx 32rpx;
+  border-radius: 12rpx;
+  box-shadow: 0 4rpx 12rpx rgba(74, 144, 226, 0.3);
+  flex-shrink: 0;
+}
+
+.conversion-part.source .value {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #FFFFFF;
+}
+
+.conversion-part.source .unit {
+  font-size: 48rpx;
+  color: #FFFFFF;
+  font-weight: 500;
+}
+
+.equals {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #4A90E2;
+  flex-shrink: 0;
+}
+
+.conversion-part.target {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  flex-shrink: 0;
+}
+
+.conversion-part.target-multi {
+  display: flex;
+  flex-direction: row;
+  gap: 16rpx;
+  width: auto;
+  align-items: center;
+  justify-content: center;
+}
+
+.target-group {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.answer-input {
+  width: 140rpx;
+  height: 88rpx;
+  font-size: 44rpx;
+  font-weight: bold;
+  border: 3rpx solid #4A90E2;
+  border-radius: 12rpx;
+  background: #F8F9FA;
+  flex-shrink: 0;
+}
+
+.answer-input.small {
+  width: 110rpx;
+  height: 80rpx;
+  font-size: 40rpx;
+}
+
+.unit {
+  font-size: 48rpx;
+  color: #4A90E2;
+  font-weight: 500;
+  min-width: 70rpx;
+  flex-shrink: 0;
+  text-align: left;
+}
+
+/* 提示信息 */
+.hint-text {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 24rpx;
+  color: #95A5A6;
+}
+
+/* 答题反馈 */
+.feedback-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.feedback-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24rpx;
+  animation: scaleIn 0.4s ease-out;
+}
+
+.feedback-text {
+  font-size: 36rpx;
+  color: #FFFFFF;
+  font-weight: 500;
+  text-align: center;
+  padding: 0 40rpx;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { 
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to { 
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 提交按钮 */
+.submit-section {
+  margin-bottom: 24rpx;
+}
+
+.submit-btn {
+  width: 100%;
+  height: 88rpx;
+  background: #4A90E2;
+  border-radius: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  color: #FFFFFF;
+  font-size: 32rpx;
+  font-weight: 600;
+  box-shadow: 0 4rpx 12rpx rgba(74, 144, 226, 0.3);
+  transition: all 0.3s;
+}
+
+.submit-btn::after {
+  border: none;
+}
+
+.submit-btn:active {
+  opacity: 0.8;
+  transform: scale(0.98);
+}
+
+/* 进度条 */
+.progress-bar-wrapper {
+  margin-top: 24rpx;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8rpx;
+  background: #E8E8E8;
+  border-radius: 4rpx;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 4rpx;
+  transition: width 0.3s ease;
+}

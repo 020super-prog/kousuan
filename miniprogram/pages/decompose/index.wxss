@@ -1,0 +1,231 @@
+/* pages/decompose/index.wxss */
+.decompose-container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #E8F4FD 0%, #F8F9FA 400rpx);
+  padding: 32rpx;
+  box-sizing: border-box;
+}
+
+/* 顶部信息栏 */
+.practice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 24rpx 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.progress-info, .mode-info, .time-info {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.progress-text {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #4A90E2;
+}
+
+.mode-text {
+  font-size: 28rpx;
+  color: #27AE60;
+  font-weight: 500;
+}
+
+.time-text {
+  font-size: 28rpx;
+  color: #FF6B35;
+  font-weight: 500;
+}
+
+/* 题目展示区 */
+.question-display {
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 60rpx 40rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.question-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48rpx;
+}
+
+/* 目标数字 */
+.target-number {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.target-label {
+  font-size: 28rpx;
+  color: #95A5A6;
+}
+
+.target-value {
+  font-size: 96rpx;
+  font-weight: bold;
+  color: #27AE60;
+  text-shadow: 2rpx 2rpx 4rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 等式展示 */
+.equation-display {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.equation-display.triple {
+  gap: 16rpx;
+}
+
+.equation-part {
+  flex: 0 0 auto;
+}
+
+.equation-input {
+  width: 120rpx;
+  height: 100rpx;
+  font-size: 48rpx;
+  font-weight: bold;
+  border: 3rpx solid #4A90E2;
+  border-radius: 16rpx;
+  background: #F8F9FA;
+}
+
+.equation-display.triple .equation-input {
+  width: 100rpx;
+  height: 90rpx;
+  font-size: 42rpx;
+}
+
+.operator {
+  font-size: 56rpx;
+  font-weight: bold;
+  color: #4A90E2;
+}
+
+.result-number {
+  font-size: 56rpx;
+  font-weight: bold;
+  color: #27AE60;
+}
+
+/* 提示信息 */
+.hint-text {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 24rpx;
+  color: #95A5A6;
+}
+
+/* 答题反馈 */
+.feedback-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.feedback-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24rpx;
+  animation: scaleIn 0.4s ease-out;
+}
+
+.feedback-text {
+  font-size: 36rpx;
+  color: #FFFFFF;
+  font-weight: 500;
+  text-align: center;
+  padding: 0 40rpx;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { 
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to { 
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 提交按钮 */
+.submit-section {
+  margin-bottom: 24rpx;
+}
+
+.submit-btn {
+  width: 100%;
+  height: 88rpx;
+  background: #4A90E2;
+  border-radius: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  color: #FFFFFF;
+  font-size: 32rpx;
+  font-weight: 600;
+  box-shadow: 0 4rpx 12rpx rgba(74, 144, 226, 0.3);
+  transition: all 0.3s;
+}
+
+.submit-btn::after {
+  border: none;
+}
+
+.submit-btn:active {
+  opacity: 0.8;
+  transform: scale(0.98);
+}
+
+/* 进度条 */
+.progress-bar-wrapper {
+  margin-top: 24rpx;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8rpx;
+  background: #E8E8E8;
+  border-radius: 4rpx;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #4A90E2;
+  border-radius: 4rpx;
+  transition: width 0.3s ease;
+}

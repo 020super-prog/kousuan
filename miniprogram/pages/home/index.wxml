@@ -1,0 +1,183 @@
+<!--pages/home/index.wxml-->
+<view class="home-container">
+  <!-- 顶部欢迎区 -->
+  <view class="welcome-section">
+    <view class="welcome-text">
+      <text class="greeting">你好，</text>
+      <text class="username">{{userName || '小朋友'}}！</text>
+    </view>
+    <view class="welcome-subtitle">今天也要努力练习哦～</view>
+  </view>
+
+  <!-- 年级选择区 - 优化版 -->
+  <view class="grade-selector-section-new">
+    <view class="grade-selector-header">
+      <t-icon name="education" size="40rpx" color="#4A90E2" />
+      <text class="grade-selector-title">选择年级</text>
+    </view>
+    <view class="grade-buttons-grid">
+      <view 
+        wx:for="{{gradeOptions}}" 
+        wx:key="value"
+        class="grade-btn {{selectedGrade === item.value ? 'grade-btn-active' : ''}}" 
+        bindtap="selectGrade"
+        data-value="{{item.value}}"
+        data-name="{{item.name}}">
+        <text class="grade-btn-number">{{item.number}}</text>
+        <text class="grade-btn-text">年级</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 题目数量选择区 -->
+  <view class="question-count-section">
+    <view class="count-header">
+      <t-icon name="format-horizontal-align-center" size="36rpx" color="#FF6B35" />
+      <text class="count-title">题目数量</text>
+    </view>
+    <view class="count-options">
+      <view 
+        wx:for="{{countPresets}}" 
+        wx:key="value"
+        class="count-btn {{selectedCount === item.value ? 'count-btn-active' : ''}}"
+        bindtap="selectCount"
+        data-value="{{item.value}}">
+        <text class="count-btn-number">{{item.value}}</text>
+        <text class="count-btn-label">道题</text>
+      </view>
+      <view 
+        class="count-btn count-btn-custom {{isCustomCount ? 'count-btn-active' : ''}}"
+        bindtap="showCustomCountInput">
+        <t-icon name="edit-1" size="36rpx" color="{{isCustomCount ? '#FFFFFF' : '#4A90E2'}}" />
+        <text class="count-btn-label">自定义</text>
+      </view>
+    </view>
+    <view wx:if="{{isCustomCount}}" class="custom-count-input">
+      <t-input
+        value="{{customCountValue}}"
+        type="number"
+        placeholder="输入题目数量(1-200)"
+        bindinput="onCustomCountInput"
+        bindconfirm="confirmCustomCount"
+        clearable
+        align="center"
+      />
+      <view class="custom-count-actions">
+        <button class="btn-cancel" bindtap="cancelCustomCount">取消</button>
+        <button class="btn-confirm" bindtap="confirmCustomCount">确定</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 口算练习卡片（动态加载） -->
+  <view class="card practice-card">
+    <view class="card-header">
+      <t-icon name="edit" size="48rpx" color="#4A90E2" />
+      <text class="card-title">口算练习</text>
+      <text class="card-subtitle">（{{selectedGradeName}} · {{selectedCount}}道题）</text>
+    </view>
+    <view class="practice-buttons">
+      <view 
+        wx:for="{{quickPractices}}" 
+        wx:key="id"
+        class="practice-btn" 
+        bindtap="startPractice" 
+        data-id="{{item.id}}"
+        data-name="{{item.name}}">
+        <t-icon name="{{item.icon}}" size="48rpx" color="#4A90E2" />
+        <text class="practice-btn-text">{{item.name}}</text>
+        <text class="practice-btn-difficulty" style="color: {{item.difficultyInfo.color}}">
+          {{item.difficultyInfo.icon}}
+        </text>
+      </view>
+    </view>
+    <view wx:if="{{quickPractices.length === 0}}" class="empty-hint">
+      <t-icon name="info-circle" size="32rpx" color="#95A5A6" />
+      <text class="empty-text">请先选择年级</text>
+    </view>
+  </view>
+
+  <!-- 数的分解与组合卡片 -->
+  <view class="card decompose-card">
+    <view class="card-header">
+      <t-icon name="layers" size="48rpx" color="#27AE60" />
+      <text class="card-title">数的分解与组合</text>
+    </view>
+    <view class="decompose-buttons">
+      <view class="feature-btn bg-success" bindtap="goToDecompose" data-mode="split">
+        <view class="feature-btn-content">
+          <t-icon name="arrow-down-rectangle" size="40rpx" color="#FFFFFF" />
+          <text class="feature-btn-text">分解练习</text>
+        </view>
+        <text class="feature-btn-desc">10/20以内分解</text>
+      </view>
+      <view class="feature-btn bg-success" bindtap="goToDecompose" data-mode="combine">
+        <view class="feature-btn-content">
+          <t-icon name="arrow-up-rectangle" size="40rpx" color="#FFFFFF" />
+          <text class="feature-btn-text">组合练习</text>
+        </view>
+        <text class="feature-btn-desc">三数相加训练</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 单位换算练习卡片 -->
+  <view class="card unit-card">
+    <view class="card-header">
+      <t-icon name="swap" size="48rpx" color="#FF6B35" />
+      <text class="card-title">单位换算练习</text>
+    </view>
+    <view class="unit-buttons">
+      <view class="unit-btn" bindtap="goToUnit" data-type="length">
+        <t-icon name="ruler" size="40rpx" color="#4A90E2" />
+        <text class="unit-btn-text">长度</text>
+      </view>
+      <view class="unit-btn" bindtap="goToUnit" data-type="weight">
+        <t-icon name="gift" size="40rpx" color="#4A90E2" />
+        <text class="unit-btn-text">重量</text>
+      </view>
+      <view class="unit-btn" bindtap="goToUnit" data-type="money">
+        <t-icon name="wallet" size="40rpx" color="#4A90E2" />
+        <text class="unit-btn-text">人民币</text>
+      </view>
+      <view class="unit-btn" bindtap="goToUnit" data-type="time">
+        <t-icon name="time" size="40rpx" color="#4A90E2" />
+        <text class="unit-btn-text">时间</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 生成PDF试卷卡片 -->
+  <view class="card pdf-card">
+    <view class="card-header">
+      <t-icon name="file-pdf" size="48rpx" color="#E74C3C" />
+      <text class="card-title">生成PDF试卷</text>
+    </view>
+    <view class="pdf-content">
+      <text class="pdf-desc">为孩子生成纸质练习卷，随时随地练习</text>
+      <button class="btn btn-secondary btn-large mt-16" bindtap="goToPdfGenerator">
+        立即生成试卷
+      </button>
+    </view>
+  </view>
+
+  <!-- 快捷统计卡片 -->
+  <view class="stats-section">
+    <view class="stat-item">
+      <text class="stat-number color-primary">{{todayCount}}</text>
+      <text class="stat-label">今日练习</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-number color-secondary">{{correctRate}}%</text>
+      <text class="stat-label">正确率</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-number color-success">{{mistakeCount}}</text>
+      <text class="stat-label">待复习错题</text>
+    </view>
+  </view>
+</view>
+
+<t-message id="t-message" />

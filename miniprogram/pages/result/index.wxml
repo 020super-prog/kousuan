@@ -1,0 +1,82 @@
+<!--pages/result/index.wxml-->
+<view class="result-container">
+  <!-- 成绩展示 -->
+  <view class="score-section">
+    <view class="score-circle {{correctRate >= 80 ? 'excellent' : correctRate >= 60 ? 'good' : 'need-improve'}}">
+      <text class="score-number">{{correctRate}}</text>
+      <text class="score-unit">分</text>
+    </view>
+    
+    <view class="score-label">
+      <text class="score-title">{{getScoreTitle(correctRate)}}</text>
+      <text class="score-subtitle">{{getScoreSubtitle(correctRate)}}</text>
+    </view>
+  </view>
+
+  <!-- 详细统计 -->
+  <view class="stats-card">
+    <view class="stat-row">
+      <view class="stat-item">
+        <t-icon name="check-circle" size="48rpx" color="#27AE60" />
+        <view class="stat-info">
+          <text class="stat-value color-success">{{correctCount}}</text>
+          <text class="stat-label">答对</text>
+        </view>
+      </view>
+      
+      <view class="stat-divider"></view>
+      
+      <view class="stat-item">
+        <t-icon name="close-circle" size="48rpx" color="#E74C3C" />
+        <view class="stat-info">
+          <text class="stat-value color-danger">{{wrongCount}}</text>
+          <text class="stat-label">答错</text>
+        </view>
+      </view>
+      
+      <view class="stat-divider"></view>
+      
+      <view class="stat-item">
+        <t-icon name="time" size="48rpx" color="#FF6B35" />
+        <view class="stat-info">
+          <text class="stat-value color-secondary">{{formatTime(duration)}}</text>
+          <text class="stat-label">用时</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 鼓励语 -->
+  <view class="encourage-card">
+    <view class="encourage-icon">{{getEncourageIcon(correctRate)}}</view>
+    <text class="encourage-text">{{getEncourageText(correctRate)}}</text>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-buttons">
+    <button class="btn btn-large mb-24" style="background: #FFFFFF; color: #4A90E2; border: 2rpx solid #4A90E2;" bindtap="viewMistakes" wx:if="{{wrongCount > 0}}">
+      <t-icon name="error-circle" size="40rpx" color="#4A90E2" style="margin-right: 16rpx;" />
+      查看错题 ({{wrongCount}}题)
+    </button>
+    
+    <button class="btn btn-primary btn-large mb-24" bindtap="practiceAgain">
+      <t-icon name="refresh" size="40rpx" color="#FFFFFF" style="margin-right: 16rpx;" />
+      再练一次
+    </button>
+    
+    <button class="btn btn-large" style="background: #F8F9FA; color: #2C3E50;" bindtap="backHome">
+      返回首页
+    </button>
+  </view>
+
+  <!-- 分享卡片 -->
+  <view class="share-card">
+    <text class="share-tip">分享给好友，一起进步</text>
+    <button class="share-btn" open-type="share">
+      <t-icon name="share" size="32rpx" color="#4A90E2" />
+      <text class="share-text">分享成绩</text>
+    </button>
+  </view>
+</view>
+
+<t-message id="t-message" />

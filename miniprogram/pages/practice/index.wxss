@@ -1,0 +1,253 @@
+/* pages/practice/index.wxss */
+.practice-container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #E8F4FD 0%, #F8F9FA 60%);
+  display: flex;
+  flex-direction: column;
+}
+
+/* 顶部信息栏 */
+.practice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 32rpx;
+  background: #FFFFFF;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.progress-info {
+  display: flex;
+  align-items: center;
+}
+
+.progress-text {
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.time-info {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.time-text {
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+/* 题目展示区 */
+.question-display {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 32rpx;
+  position: relative;
+}
+
+/* 加载状态 */
+.loading-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #95A5A6;
+}
+
+/* 错误状态 */
+.error-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.error-text {
+  font-size: 32rpx;
+  color: #E74C3C;
+  font-weight: 600;
+}
+
+.retry-btn {
+  margin-top: 16rpx;
+  padding: 16rpx 48rpx;
+  background: linear-gradient(135deg, #4A90E2, #357ABD);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.question-wrapper {
+  width: 100%;
+  text-align: center;
+}
+
+.question-text {
+  font-size: 80rpx;
+  font-weight: 700;
+  color: #2C3E50;
+  line-height: 1.5;
+  display: block;
+  margin-bottom: 48rpx;
+}
+
+.answer-display {
+  min-height: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx;
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  border: 4rpx solid #4A90E2;
+  box-shadow: 0 4rpx 16rpx rgba(74, 144, 226, 0.2);
+}
+
+.answer-text {
+  font-size: 72rpx;
+  font-weight: 700;
+  color: #4A90E2;
+}
+
+.answer-placeholder {
+  font-size: 32rpx;
+  color: #95A5A6;
+}
+
+/* 答题反馈动画 */
+.feedback-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.feedback-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: scaleIn 0.3s ease-out;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.5);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.feedback-text {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin-top: 24rpx;
+}
+
+.feedback-animation.wrong .feedback-icon {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-10rpx); }
+  20%, 40%, 60%, 80% { transform: translateX(10rpx); }
+}
+
+/* 数字键盘 */
+.keyboard-wrapper {
+  padding: 32rpx;
+  background: #FFFFFF;
+  border-radius: 32rpx 32rpx 0 0;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.08);
+}
+
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.keyboard-row {
+  display: flex;
+  gap: 16rpx;
+}
+
+.key-btn {
+  flex: 1;
+  height: 120rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F5F5F5;
+  border-radius: 16rpx;
+  font-size: 48rpx;
+  font-weight: 600;
+  color: #2C3E50;
+  transition: all 0.2s;
+}
+
+.key-btn:active {
+  transform: scale(0.95);
+  background: #E8E8E8;
+}
+
+.key-delete {
+  background: #FFF3E0;
+}
+
+.key-delete:active {
+  background: #FFE5CC;
+}
+
+.key-confirm {
+  background: #4A90E2;
+}
+
+.key-confirm:active {
+  background: #357ABD;
+}
+
+/* 进度条 */
+.progress-bar-wrapper {
+  padding: 0 32rpx 32rpx;
+  background: #FFFFFF;
+}
+
+.progress-bar {
+  height: 8rpx;
+  background: #E8E8E8;
+  border-radius: 4rpx;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4A90E2 0%, #357ABD 100%);
+  transition: width 0.3s ease;
+}

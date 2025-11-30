@@ -1,0 +1,9 @@
+{
+  "name": "gradeEngine",
+  "version": "1.0.0",
+  "description": "年级题型智能匹配引擎",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

@@ -1,0 +1,127 @@
+<!--pages/decompose/index.wxml-->
+<view class="decompose-container">
+  <!-- 顶部信息栏 -->
+  <view class="practice-header">
+    <view class="progress-info">
+      <text class="progress-text">{{currentIndex + 1}}/{{totalCount}}</text>
+    </view>
+    <view class="mode-info">
+      <text class="mode-text">{{modeConfig[mode].name}}</text>
+    </view>
+    <view class="time-info">
+      <t-icon name="time" size="32rpx" color="#FF6B35" />
+      <text class="time-text">{{formatTime(elapsedTime)}}</text>
+    </view>
+  </view>
+
+  <!-- 题目展示区 -->
+  <view class="question-display">
+    <view class="question-wrapper">
+      <!-- 目标数字 -->
+      <view class="target-number">
+        <text class="target-label">目标数字</text>
+        <text class="target-value">{{targetNumber}}</text>
+      </view>
+
+      <!-- 等式展示 -->
+      <view class="equation-display" wx:if="{{mode !== 'triple'}}">
+        <view class="equation-part">
+          <t-input
+            value="{{input1}}"
+            type="number"
+            placeholder="?"
+            bindinput="onInput1Change"
+            align="center"
+            class="equation-input"
+          />
+        </view>
+        <text class="operator">+</text>
+        <view class="equation-part">
+          <t-input
+            value="{{input2}}"
+            type="number"
+            placeholder="?"
+            bindinput="onInput2Change"
+            align="center"
+            class="equation-input"
+          />
+        </view>
+        <text class="operator">=</text>
+        <text class="result-number">{{targetNumber}}</text>
+      </view>
+
+      <!-- 三数相加 -->
+      <view class="equation-display triple" wx:else>
+        <view class="equation-part">
+          <t-input
+            value="{{input1}}"
+            type="number"
+            placeholder="?"
+            bindinput="onInput1Change"
+            align="center"
+            class="equation-input"
+          />
+        </view>
+        <text class="operator">+</text>
+        <view class="equation-part">
+          <t-input
+            value="{{input2}}"
+            type="number"
+            placeholder="?"
+            bindinput="onInput2Change"
+            align="center"
+            class="equation-input"
+          />
+        </view>
+        <text class="operator">+</text>
+        <view class="equation-part">
+          <t-input
+            value="{{input3}}"
+            type="number"
+            placeholder="?"
+            bindinput="onInput3Change"
+            align="center"
+            class="equation-input"
+          />
+        </view>
+        <text class="operator">=</text>
+        <text class="result-number">{{targetNumber}}</text>
+      </view>
+
+      <!-- 提示信息 -->
+      <view class="hint-text">
+        <t-icon name="info-circle" size="28rpx" color="#95A5A6" />
+        <text>请输入{{mode === 'triple' ? '三个' : '两个'}}非零加数</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 答题反馈动画 -->
+  <view class="feedback-animation {{feedbackType}}" wx:if="{{showFeedback}}">
+    <view class="feedback-icon" wx:if="{{feedbackType === 'correct'}}">
+      <t-icon name="check-circle" size="160rpx" color="#27AE60" />
+      <text class="feedback-text">{{feedbackMessage}}</text>
+    </view>
+    <view class="feedback-icon" wx:else>
+      <t-icon name="close-circle" size="160rpx" color="#E74C3C" />
+      <text class="feedback-text">{{feedbackMessage}}</text>
+    </view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <view class="submit-section">
+    <button class="submit-btn" bindtap="submitAnswer">
+      <t-icon name="check" size="40rpx" color="#FFFFFF" />
+      <text>提交答案</text>
+    </button>
+  </view>
+
+  <!-- 进度条 -->
+  <view class="progress-bar-wrapper">
+    <view class="progress-bar">
+      <view class="progress-fill" style="width: {{(currentIndex + 1) / totalCount * 100}}%"></view>
+    </view>
+  </view>
+</view>
+
+<t-message id="t-message" />

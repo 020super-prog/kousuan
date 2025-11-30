@@ -1,0 +1,118 @@
+<!--pages/unit/index.wxml-->
+<view class="unit-container">
+  <!-- 顶部信息栏 -->
+  <view class="practice-header">
+    <view class="progress-info">
+      <text class="progress-text">{{currentIndex + 1}}/{{totalCount}}</text>
+    </view>
+    <view class="unit-type-info">
+      <t-icon name="{{unitConfig[unitType].icon}}" size="32rpx" color="{{unitConfig[unitType].color}}" />
+      <text class="unit-type-text" style="color: {{unitConfig[unitType].color}}">{{unitConfig[unitType].name}}</text>
+    </view>
+    <view class="time-info">
+      <t-icon name="time" size="32rpx" color="#FF6B35" />
+      <text class="time-text">{{formatTime(elapsedTime)}}</text>
+    </view>
+  </view>
+
+  <!-- 题目展示区 -->
+  <view class="question-display">
+    <view class="question-wrapper" wx:if="{{currentQuestion}}">
+      <!-- 题目文本 -->
+      <view class="question-text">
+        <text class="question-label">请完成单位换算</text>
+      </view>
+
+      <!-- 简单换算：5米 = ? 厘米 -->
+      <view class="conversion-display" wx:if="{{currentQuestion.type === 'simple'}}">
+        <view class="conversion-part source">
+          <text class="value">{{currentQuestion.sourceValue}}</text>
+          <text class="unit">{{currentQuestion.sourceUnit}}</text>
+        </view>
+        <text class="equals">=</text>
+        <view class="conversion-part target">
+          <t-input
+            value="{{answer1}}"
+            type="digit"
+            placeholder="?"
+            bindchange="onAnswer1Change"
+            bindinput="onAnswer1Change"
+            align="center"
+            class="answer-input"
+          />
+          <text class="unit">{{currentQuestion.targetUnit}}</text>
+        </view>
+      </view>
+
+      <!-- 复杂换算：120厘米 = ? 米 ? 厘米 -->
+      <view class="conversion-display complex" wx:else>
+        <view class="conversion-part source">
+          <text class="value">{{currentQuestion.sourceValue}}</text>
+          <text class="unit">{{currentQuestion.sourceUnit}}</text>
+        </view>
+        <text class="equals">=</text>
+        <view class="conversion-part target-multi">
+          <view class="target-group">
+            <t-input
+              value="{{answer1}}"
+              type="digit"
+              placeholder="?"
+              bindchange="onAnswer1Change"
+              bindinput="onAnswer1Change"
+              align="center"
+              class="answer-input small"
+            />
+            <text class="unit">{{currentQuestion.targetUnit1}}</text>
+          </view>
+          <view class="target-group">
+            <t-input
+              value="{{answer2}}"
+              type="digit"
+              placeholder="?"
+              bindchange="onAnswer2Change"
+              bindinput="onAnswer2Change"
+              align="center"
+              class="answer-input small"
+            />
+            <text class="unit">{{currentQuestion.targetUnit2}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 提示信息 -->
+      <view class="hint-text">
+        <t-icon name="info-circle" size="28rpx" color="#95A5A6" />
+        <text>请输入换算后的数值</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 答题反馈动画 -->
+  <view class="feedback-animation {{feedbackType}}" wx:if="{{showFeedback}}">
+    <view class="feedback-icon" wx:if="{{feedbackType === 'correct'}}">
+      <t-icon name="check-circle" size="160rpx" color="#27AE60" />
+      <text class="feedback-text">{{feedbackMessage}}</text>
+    </view>
+    <view class="feedback-icon" wx:else>
+      <t-icon name="close-circle" size="160rpx" color="#E74C3C" />
+      <text class="feedback-text">{{feedbackMessage}}</text>
+    </view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <view class="submit-section">
+    <button class="submit-btn" bindtap="submitAnswer">
+      <t-icon name="check" size="40rpx" color="#FFFFFF" />
+      <text>提交答案</text>
+    </button>
+  </view>
+
+  <!-- 进度条 -->
+  <view class="progress-bar-wrapper">
+    <view class="progress-bar">
+      <view class="progress-fill" style="width: {{(currentIndex + 1) / totalCount * 100}}%; background: {{unitConfig[unitType].color}}"></view>
+    </view>
+  </view>
+</view>
+
+<t-message id="t-message" />

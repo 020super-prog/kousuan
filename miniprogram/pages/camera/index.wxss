@@ -1,0 +1,121 @@
+/* pages/camera/index.wxss */
+.camera-container {
+  min-height: 100vh;
+  background: #F8F9FA;
+  padding: 32rpx;
+  padding-bottom: 120rpx;
+}
+
+.camera-header {
+  text-align: center;
+  margin-bottom: 48rpx;
+}
+
+.page-title {
+  display: block;
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #2C3E50;
+  margin-bottom: 12rpx;
+}
+
+.page-subtitle {
+  font-size: 28rpx;
+  color: #95A5A6;
+}
+
+.camera-guide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 32rpx;
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.guide-image {
+  width: 200rpx;
+  height: 200rpx;
+  background: linear-gradient(135deg, #E8F4FD 0%, #D4E9F9 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 32rpx;
+}
+
+.guide-text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #2C3E50;
+  margin-bottom: 12rpx;
+}
+
+.guide-tips {
+  font-size: 24rpx;
+  color: #95A5A6;
+}
+
+.camera-actions {
+  padding: 0 32rpx;
+}
+
+.history-section {
+  margin-top: 48rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #2C3E50;
+  margin-bottom: 24rpx;
+}
+
+.history-list {
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  border-bottom: 1rpx solid #F0F0F0;
+  transition: background 0.3s;
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.history-item:active {
+  background: #F8F9FA;
+}
+
+.history-thumb {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 8rpx;
+  margin-right: 24rpx;
+}
+
+.history-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.history-date {
+  font-size: 28rpx;
+  color: #2C3E50;
+  margin-bottom: 8rpx;
+}
+
+.history-stats {
+  font-size: 24rpx;
+  color: #95A5A6;
+}
