@@ -105,7 +105,7 @@ Page({
     // 从本地存储获取上次选择的年级，默认为一年级
     let gradeKey = wx.getStorageSync('selectedGrade') || 'grade_1';
     
-    // 将旧格式转换为新格式
+    // 将旧格式转换为新格式（向后兼容）
     const gradeMapping = {
       'grade_1_2': 'grade_1',
       'grade_3_4': 'grade_3',
@@ -114,7 +114,7 @@ Page({
     
     if (gradeMapping[gradeKey]) {
       gradeKey = gradeMapping[gradeKey];
-      wx.setStorageSync('selectedGrade', gradeKey);
+      wx.setStorageSync('selectedGrade', gradeKey); // 保存新格式
     }
     
     // 获取年级名称
@@ -126,8 +126,8 @@ Page({
       selectedGradeName: gradeName
     });
 
-    // 加载该年级的题型（兼容云函数格式）
-    await this.loadCategories(this.convertToCloudFormat(gradeKey));
+    // 直接使用新格式加载题型（不再转换）
+    await this.loadCategories(gradeKey);
   },
 
   // 加载已选择的题目数量
@@ -144,18 +144,7 @@ Page({
     }
   },
 
-  // 转换为云函数格式（兼容旧的年级分组）
-  convertToCloudFormat(gradeKey) {
-    const cloudMapping = {
-      'grade_1': 'grade_1_2',
-      'grade_2': 'grade_1_2',
-      'grade_3': 'grade_3_4',
-      'grade_4': 'grade_3_4',
-      'grade_5': 'grade_5_6',
-      'grade_6': 'grade_5_6'
-    };
-    return cloudMapping[gradeKey] || 'grade_1_2';
-  },
+
 
   // 加载指定年级的题型列表
   async loadCategories(gradeKey) {
@@ -221,9 +210,8 @@ Page({
       selectedGradeName: gradeName
     });
 
-    // 重新加载题型（转换为云函数格式）
-    const cloudGradeKey = this.convertToCloudFormat(gradeValue);
-    await this.loadCategories(cloudGradeKey);
+    // 直接使用新格式加载题型（不再转换）
+    await this.loadCategories(gradeValue);
 
     Message.success({
       context: this,
@@ -324,12 +312,9 @@ Page({
       return;
     }
 
-    // 转换为云函数格式
-    const cloudGradeKey = this.convertToCloudFormat(this.data.selectedGrade);
-    
-    // 跳转到练习页面，传递年级、题型和题目数量信息
+    // 直接使用新格式传递参数
     wx.navigateTo({
-      url: `/pages/practice/index?gradeKey=${cloudGradeKey}&categoryId=${categoryId}&categoryName=${categoryName}&count=${this.data.selectedCount}`
+      url: `/pages/practice/index?gradeKey=${this.data.selectedGrade}&categoryId=${categoryId}&categoryName=${categoryName}&count=${this.data.selectedCount}`
     });
   },
 
@@ -378,8 +363,33 @@ Page({
 
   // 跳转到PDF生成页面
   goToPdfGenerator() {
+    if (!this.data.selectedGrade) {
+      Message.warning({
+        context: this,
+        offset: [20, 32],
+        duration: 2000,
+        content: '请先选择年级'
+      });
+      return;
+    }
+
+    // 构建完整的跳转参数
+    const params = {
+      grade: this.data.selectedGrade,           // 年级（新格式）
+      count: this.data.selectedCount,           // 题目数量
+      smartAllocation: 'true',                  // 启用智能分配
+      fromPage: 'home'                          // 来源标识
+    };
+    
+    // 构建URL参数字符串
+    const queryString = Object.keys(params)
+      .map(key => `${key}=${encodeURIComponent(params[key])}`)
+      .join('&');
+    
+    console.log('跳转PDF页面，参数:', params);
+    
     wx.navigateTo({
-      url: `/pages/pdfGenerator/index?grade=${this.data.selectedGrade}&count=${this.data.selectedCount}`
+      url: `/pages/pdfGenerator/index?${queryString}`
     });
   }
 });

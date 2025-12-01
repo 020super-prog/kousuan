@@ -59,18 +59,45 @@ Page({
   onLoad(options) {
     console.log('PDF生成页面加载，参数:', options);
     
-    // 从首页传来的参数
+    // 接收年级参数
     if (options.grade) {
       this.setData({ selectedGrade: options.grade });
+      console.log('接收到年级:', options.grade);
     }
+    
+    // 接收题目数量参数
     if (options.count) {
-      this.setData({ questionCount: parseInt(options.count) });
+      const count = parseInt(options.count);
+      this.setData({ questionCount: count });
+      console.log('接收到题目数量:', count);
+    }
+    
+    // 自动启用智能分配
+    if (options.smartAllocation === 'true') {
+      this.setData({ smartAllocation: true });
+      console.log('自动启用智能分配模式');
+      
+      // 显示提示信息
+      setTimeout(() => {
+        Message.info({
+          context: this,
+          offset: [20, 32],
+          duration: 2500,
+          content: '已启用智能分配模式，系统将自动配比题型'
+        });
+      }, 500);
+    }
+    
+    // 如果是从首页进入，记录来源
+    if (options.fromPage === 'home') {
+      console.log('从首页进入，年级:', options.grade);
     }
     
     console.log('初始数据:', {
       selectedGrade: this.data.selectedGrade,
       selectedCategories: this.data.selectedCategories,
       questionCount: this.data.questionCount,
+      smartAllocation: this.data.smartAllocation,
       columnCount: this.data.columnCount
     });
   },
