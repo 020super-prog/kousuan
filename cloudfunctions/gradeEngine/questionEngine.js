@@ -1,9 +1,11 @@
 /**
- * 题目生成引擎
- * 根据年级和题型规则智能生成题目
+ * 题目生成引擎 - 增强版
+ * 支持小学1-6年级所有细分题型的智能生成
  */
 
 const { getCategoryRules } = require('./gradeConfig');
+
+// ============== 工具函数 ==============
 
 /**
  * 生成随机整数
@@ -13,173 +15,272 @@ function randomInt(min, max) {
 }
 
 /**
- * 生成加法题目
+ * 最大公约数
  */
-function generateAddition(rules) {
-  const { minValue, maxValue, allowCarry, allowMultiDigit } = rules;
-  
-  let num1, num2;
-  
-  if (allowMultiDigit && maxValue > 20) {
-    // 两位数及以上加法
-    num1 = randomInt(minValue, maxValue);
-    num2 = randomInt(minValue, maxValue - num1);
-  } else {
-    // 20以内加法
-    num1 = randomInt(minValue, maxValue);
-    num2 = randomInt(minValue, maxValue);
-    
-    // 如果需要进位，确保和大于10
-    if (allowCarry && num1 + num2 <= 10) {
-      num2 = randomInt(10 - num1 + 1, maxValue - num1);
-    }
-  }
-  
-  const answer = num1 + num2;
-  const expression = `${num1} + ${num2}`;
-  
+function gcd(a, b) {
+  return b === 0 ? a : gcd(b, a % b);
+}
+
+/**
+ * 最小公倍数
+ */
+function lcm(a, b) {
+  return (a * b) / gcd(a, b);
+}
+
+/**
+ * 化简分数
+ */
+function simplifyFraction(numerator, denominator) {
+  const divisor = gcd(Math.abs(numerator), Math.abs(denominator));
   return {
-    expression: expression,           // 标准表达式（不含 = ?）
-    displayQuestion: `${expression} = ?`,  // 显示格式（含 = ?）
-    question: expression,             // 兼容旧版
-    answer: answer,
-    type: 'addition',
+    numerator: numerator / divisor,
+    denominator: denominator / divisor
+  };
+}
+
+/**
+ * 检查是否进位
+ */
+function hasCarry(num1, num2) {
+  return (num1 % 10) + (num2 % 10) >= 10;
+}
+
+/**
+ * 检查是否退位
+ */
+function hasBorrow(num1, num2) {
+  return (num1 % 10) < (num2 % 10);
+}
+
+// ============== 一年级题型生成器 ==============
+
+/**
+ * 1.1 - 10以内加法
+ */
+function generate_1_1(rules) {
+  const num1 = randomInt(rules.minValue, rules.maxValue);
+  const num2 = randomInt(rules.minValue, rules.maxValue - num1);
+  return createQuestion(num1, '+', num2, num1 + num2, 'addition');
+}
+
+/**
+ * 1.2 - 10以内减法
+ */
+function generate_1_2(rules) {
+  const num1 = randomInt(rules.minValue + 1, rules.maxValue);
+  const num2 = randomInt(rules.minValue, num1);
+  return createQuestion(num1, '-', num2, num1 - num2, 'subtraction');
+}
+
+/**
+ * 1.3 - 凑十法加法 (7 + □ = 10)
+ */
+function generate_1_3(rules) {
+  const num1 = randomInt(1, 9);
+  const num2 = 10 - num1;
+  const expression = `${num1} + □ = 10`;
+  return {
+    expression: expression,
+    displayQuestion: expression,
+    question: expression,
+    answer: num2,
+    type: 'fill_blank',
     operands: [num1, num2],
     operator: '+'
   };
 }
 
 /**
- * 生成减法题目
+ * 1.4 - 20以内不进位加法
  */
-function generateSubtraction(rules) {
-  const { minValue, maxValue, allowBorrow, resultPositive } = rules;
-  
+function generate_1_4(rules) {
   let num1, num2;
+  do {
+    num1 = randomInt(rules.minValue, rules.maxValue);
+    num2 = randomInt(1, rules.maxValue - num1);
+  } while (hasCarry(num1, num2));
   
-  if (maxValue > 20) {
-    // 两位数及以上减法
-    num1 = randomInt(minValue + 10, maxValue);
-    num2 = randomInt(minValue, num1);
-  } else {
-    // 20以内减法
-    num1 = randomInt(minValue + 5, maxValue);
-    num2 = randomInt(minValue, num1);
-    
-    // 如果需要退位，确保个位数小于被减数个位
-    if (allowBorrow) {
-      const digit1 = num1 % 10;
-      const digit2 = num2 % 10;
-      if (digit1 >= digit2) {
-        num2 = Math.floor(num2 / 10) * 10 + randomInt(digit1 + 1, 9);
-        if (num2 > num1) num2 = num1 - 1;
-      }
-    }
-  }
-  
-  const answer = num1 - num2;
-  const expression = `${num1} - ${num2}`;
-  
-  return {
-    expression: expression,
-    displayQuestion: `${expression} = ?`,
-    question: expression,
-    answer: answer,
-    type: 'subtraction',
-    operands: [num1, num2],
-    operator: '-'
-  };
+  return createQuestion(num1, '+', num2, num1 + num2, 'addition');
 }
 
 /**
- * 生成乘法题目
+ * 1.5 - 20以内不退位减法
  */
-function generateMultiplication(rules) {
-  const { multiplicandMax = 99, multiplierMax = 9, allowZero = false } = rules;
+function generate_1_5(rules) {
+  let num1, num2;
+  do {
+    num1 = randomInt(rules.minValue, rules.maxValue);
+    num2 = randomInt(1, num1);
+  } while (hasBorrow(num1, num2));
   
-  const num1 = randomInt(allowZero ? 0 : 1, multiplicandMax);
-  const num2 = randomInt(allowZero ? 0 : 1, multiplierMax);
-  
-  const answer = num1 * num2;
-  const expression = `${num1} × ${num2}`;
-  
-  return {
-    expression: expression,
-    displayQuestion: `${expression} = ?`,
-    question: expression,
-    answer: answer,
-    type: 'multiplication',
-    operands: [num1, num2],
-    operator: '×'
-  };
+  return createQuestion(num1, '-', num2, num1 - num2, 'subtraction');
 }
 
 /**
- * 生成除法题目
+ * 1.6 - 20以内进位加法
  */
-function generateDivision(rules) {
-  const { multiplicandMax = 99, multiplierMax = 9, allowZero = false } = rules;
+function generate_1_6(rules) {
+  let num1, num2;
+  do {
+    num1 = randomInt(rules.minValue + 5, 9);
+    num2 = randomInt(rules.minValue + 5, 9);
+  } while (num1 + num2 > rules.maxValue || !hasCarry(num1, num2));
   
-  const divisor = randomInt(1, multiplierMax); // 除数不能为0
-  const quotient = randomInt(allowZero ? 0 : 1, Math.floor(multiplicandMax / divisor));
-  const dividend = divisor * quotient; // 保证整除
-  
-  const answer = quotient;
-  const expression = `${dividend} ÷ ${divisor}`;
-  
-  return {
-    expression: expression,
-    displayQuestion: `${expression} = ?`,
-    question: expression,
-    answer: answer,
-    type: 'division',
-    operands: [dividend, divisor],
-    operator: '÷'
-  };
+  return createQuestion(num1, '+', num2, num1 + num2, 'addition');
 }
 
 /**
- * 生成混合运算题目
+ * 1.7 - 20以内退位减法
  */
-function generateMixedOperation(rules) {
-  const { operators, operands, allowParentheses = false, steps = 2 } = rules;
+function generate_1_7(rules) {
+  let num1, num2;
+  do {
+    num1 = randomInt(rules.minValue, rules.maxValue);
+    num2 = randomInt(5, 9);
+  } while (num1 <= num2 || !hasBorrow(num1, num2));
   
-  // 随机选择运算符
-  const selectedOps = [];
-  for (let i = 0; i < steps; i++) {
-    selectedOps.push(operators[randomInt(0, operators.length - 1)]);
-  }
+  return createQuestion(num1, '-', num2, num1 - num2, 'subtraction');
+}
+
+/**
+ * 1.8 - 整十数加整十数
+ */
+function generate_1_8(rules) {
+  const num1 = randomInt(1, 9) * 10;
+  const num2 = randomInt(1, 9) * 10;
+  if (num1 + num2 > 100) return generate_1_8(rules);
+  return createQuestion(num1, '+', num2, num1 + num2, 'addition');
+}
+
+/**
+ * 1.9 - 整十数减整十数
+ */
+function generate_1_9(rules) {
+  const num1 = randomInt(2, 9) * 10;
+  const num2 = randomInt(1, Math.floor(num1/10) - 1) * 10;
+  return createQuestion(num1, '-', num2, num1 - num2, 'subtraction');
+}
+
+/**
+ * 1.10 - 100以内一步混合 (连加/连减/加减混合)
+ */
+function generate_1_10(rules) {
+  const num1 = randomInt(rules.minValue, rules.maxValue);
+  const num2 = randomInt(rules.minValue, rules.maxValue);
+  const num3 = randomInt(rules.minValue, Math.min(rules.maxValue, num1 + num2));
   
-  // 生成数字
-  const nums = [];
-  for (let i = 0; i <= steps; i++) {
-    nums.push(randomInt(1, 20));
-  }
+  const ops = ['+', '-'];
+  const op1 = ops[randomInt(0, 1)];
+  const op2 = ops[randomInt(0, 1)];
   
-  // 构建表达式
-  let expression = `${nums[0]}`;
-  for (let i = 0; i < steps; i++) {
-    expression += ` ${selectedOps[i]} ${nums[i + 1]}`;
-  }
-  
-  // 如果允许括号，随机添加括号
-  if (allowParentheses && steps >= 2 && Math.random() > 0.5) {
-    expression = `(${nums[0]} ${selectedOps[0]} ${nums[1]}) ${selectedOps[1]} ${nums[2]}`;
-  }
-  
-  // 计算答案（简化版，实际应使用更严格的表达式解析）
   let answer;
-  try {
-    // 替换数学符号为JavaScript运算符
-    const jsExpression = expression
-      .replace(/×/g, '*')
-      .replace(/÷/g, '/')
-      .replace(/\s/g, '');
-    answer = eval(jsExpression);
-    answer = Math.round(answer * 100) / 100; // 保留两位小数
-  } catch (e) {
-    answer = 0;
+  if (op1 === '+' && op2 === '+') {
+    answer = num1 + num2 + num3;
+  } else if (op1 === '+' && op2 === '-') {
+    answer = num1 + num2 - num3;
+  } else if (op1 === '-' && op2 === '+') {
+    answer = num1 - num2 + num3;
+  } else {
+    answer = num1 - num2 - num3;
+    if (answer < 0) return generate_1_10(rules); // 重新生成
   }
+  
+  const expression = `${num1} ${op1} ${num2} ${op2} ${num3}`;
+  return {
+    expression: expression,
+    displayQuestion: `${expression} = ?`,
+    question: expression,
+    answer: answer,
+    type: 'mixed',
+    operators: [op1, op2]
+  };
+}
+
+// ============== 二年级题型生成器 ==============
+
+/**
+ * 2.1 - 100以内不进位加法
+ */
+function generate_2_1(rules) {
+  let num1, num2;
+  do {
+    num1 = randomInt(rules.minValue, rules.maxValue);
+    num2 = randomInt(rules.minValue, rules.maxValue - num1);
+  } while (hasCarry(num1, num2));
+  
+  return createQuestion(num1, '+', num2, num1 + num2, 'addition');
+}
+
+/**
+ * 2.2 - 100以内进位加法
+ */
+function generate_2_2(rules) {
+  let num1, num2;
+  do {
+    num1 = randomInt(rules.minValue, rules.maxValue);
+    num2 = randomInt(rules.minValue, rules.maxValue - num1);
+  } while (!hasCarry(num1, num2) || num1 + num2 > rules.maxValue);
+  
+  return createQuestion(num1, '+', num2, num1 + num2, 'addition');
+}
+
+/**
+ * 2.3 - 100以内不退位减法
+ */
+function generate_2_3(rules) {
+  let num1, num2;
+  do {
+    num1 = randomInt(rules.minValue, rules.maxValue);
+    num2 = randomInt(rules.minValue, num1);
+  } while (hasBorrow(num1, num2));
+  
+  return createQuestion(num1, '-', num2, num1 - num2, 'subtraction');
+}
+
+/**
+ * 2.4 - 100以内退位减法
+ */
+function generate_2_4(rules) {
+  let num1, num2;
+  do {
+    num1 = randomInt(rules.minValue, rules.maxValue);
+    num2 = randomInt(rules.minValue, num1 - 1);
+  } while (!hasBorrow(num1, num2));
+  
+  return createQuestion(num1, '-', num2, num1 - num2, 'subtraction');
+}
+
+/**
+ * 2.5 - 表内乘法
+ */
+function generate_2_5(rules) {
+  const num1 = randomInt(rules.minValue, rules.maxValue);
+  const num2 = randomInt(rules.minValue, rules.maxValue);
+  return createQuestion(num1, '×', num2, num1 * num2, 'multiplication');
+}
+
+/**
+ * 2.6 - 表内除法
+ */
+function generate_2_6(rules) {
+  const divisor = randomInt(rules.minValue, rules.maxValue);
+  const quotient = randomInt(rules.minValue, rules.maxValue);
+  const dividend = divisor * quotient;
+  return createQuestion(dividend, '÷', divisor, quotient, 'division');
+}
+
+/**
+ * 2.7 - 简单乘加/乘减
+ */
+function generate_2_7(rules) {
+  const num1 = randomInt(2, 9);
+  const num2 = randomInt(2, 9);
+  const num3 = randomInt(1, 9);
+  const op = Math.random() > 0.5 ? '+' : '-';
+  
+  const answer = op === '+' ? (num1 * num2 + num3) : (num1 * num2 - num3);
+  const expression = `${num1} × ${num2} ${op} ${num3}`;
   
   return {
     expression: expression,
@@ -187,149 +288,310 @@ function generateMixedOperation(rules) {
     question: expression,
     answer: answer,
     type: 'mixed',
-    operators: selectedOps
+    operators: ['×', op]
   };
 }
 
 /**
- * 生成小数运算题目
+ * 2.8 - 简单除加/除减
  */
-function generateDecimalOperation(rules) {
-  const { operators, decimalPlaces = 1, maxValue = 100 } = rules;
+function generate_2_8(rules) {
+  const divisor = randomInt(2, 9);
+  const quotient = randomInt(2, 9);
+  const dividend = divisor * quotient;
+  const num3 = randomInt(1, 9);
+  const op = Math.random() > 0.5 ? '+' : '-';
   
-  const operator = operators[randomInt(0, operators.length - 1)];
-  const factor = Math.pow(10, decimalPlaces);
+  const answer = op === '+' ? (quotient + num3) : (quotient - num3);
+  if (answer < 0) return generate_2_8(rules);
   
-  let num1 = randomInt(1, maxValue * factor) / factor;
-  let num2 = randomInt(1, maxValue * factor) / factor;
-  
-  let answer;
-  let displayOp = operator;
-  
-  switch(operator) {
-    case '+':
-      answer = num1 + num2;
-      break;
-    case '-':
-      if (num1 < num2) [num1, num2] = [num2, num1]; // 确保结果为正
-      answer = num1 - num2;
-      break;
-    case '×':
-      displayOp = '×';
-      answer = num1 * num2;
-      break;
-    case '÷':
-      displayOp = '÷';
-      num2 = randomInt(1, 9); // 除数用整数
-      answer = num1 / num2;
-      break;
-  }
-  
-  answer = Math.round(answer * factor) / factor;
-  const expression = `${num1} ${displayOp} ${num2}`;
+  const expression = `${dividend} ÷ ${divisor} ${op} ${num3}`;
   
   return {
     expression: expression,
     displayQuestion: `${expression} = ?`,
     question: expression,
     answer: answer,
-    type: 'decimal',
-    operands: [num1, num2],
-    operator: displayOp
+    type: 'mixed',
+    operators: ['÷', op]
   };
 }
 
 /**
- * 生成分数运算题目
+ * 2.9 - 两位数加减整十数/一位数
  */
-function generateFractionOperation(rules) {
-  const { operators, sameDenominator = true, maxNumerator = 20, maxDenominator = 20 } = rules;
+function generate_2_9(rules) {
+  const num1 = randomInt(rules.minValue, rules.maxValue);
+  const isAddTen = Math.random() > 0.5;
+  const num2 = isAddTen ? randomInt(1, 9) * 10 : randomInt(1, 9);
+  const op = Math.random() > 0.5 ? '+' : '-';
   
-  const operator = operators[randomInt(0, operators.length - 1)];
-  
-  let denominator1, denominator2, numerator1, numerator2;
-  
-  if (sameDenominator) {
-    // 同分母
-    denominator1 = denominator2 = randomInt(2, maxDenominator);
-    numerator1 = randomInt(1, denominator1 - 1);
-    numerator2 = randomInt(1, denominator1 - 1);
+  let answer;
+  if (op === '+') {
+    answer = num1 + num2;
+    if (answer > 99) return generate_2_9(rules);
   } else {
-    // 异分母（简化版，使用倍数关系）
-    denominator1 = randomInt(2, 10);
-    denominator2 = denominator1 * randomInt(2, 3);
-    numerator1 = randomInt(1, denominator1 - 1);
-    numerator2 = randomInt(1, denominator2 - 1);
+    answer = num1 - num2;
+    if (answer < 0) return generate_2_9(rules);
   }
   
-  let answerNumerator, answerDenominator;
+  return createQuestion(num1, op, num2, answer, op === '+' ? 'addition' : 'subtraction');
+}
+
+// ============== 三年级题型生成器 ==============
+
+/**
+ * 3.1 - 三位数加减整百数
+ */
+function generate_3_1(rules) {
+  const num1 = randomInt(rules.minValue, rules.maxValue);
+  const num2 = randomInt(1, 9) * 100;
+  const op = Math.random() > 0.5 ? '+' : '-';
   
-  if (operator === '+') {
-    if (sameDenominator) {
-      answerNumerator = numerator1 + numerator2;
-      answerDenominator = denominator1;
-    } else {
-      // 通分
-      answerDenominator = denominator1 * denominator2;
-      answerNumerator = numerator1 * denominator2 + numerator2 * denominator1;
-    }
-  } else if (operator === '-') {
-    if (sameDenominator) {
-      if (numerator1 < numerator2) [numerator1, numerator2] = [numerator2, numerator1];
-      answerNumerator = numerator1 - numerator2;
-      answerDenominator = denominator1;
-    } else {
-      answerDenominator = denominator1 * denominator2;
-      answerNumerator = numerator1 * denominator2 - numerator2 * denominator1;
-      if (answerNumerator < 0) answerNumerator = Math.abs(answerNumerator);
-    }
+  let answer;
+  if (op === '+') {
+    answer = num1 + num2;
+    if (answer > 999) return generate_3_1(rules);
+  } else {
+    answer = num1 - num2;
+    if (answer < 0) return generate_3_1(rules);
   }
   
-  // 化简（最大公约数）
-  const gcd = (a, b) => b === 0 ? a : gcd(b, a % b);
-  const divisor = gcd(answerNumerator, answerDenominator);
-  answerNumerator /= divisor;
-  answerDenominator /= divisor;
+  return createQuestion(num1, op, num2, answer, op === '+' ? 'addition' : 'subtraction');
+}
+
+/**
+ * 3.2 - 几百几十加减几百几十
+ */
+function generate_3_2(rules) {
+  // 生成没有个位数的三位数
+  const num1 = randomInt(10, 99) * 10;
+  const num2 = randomInt(10, 99) * 10;
+  const op = Math.random() > 0.5 ? '+' : '-';
   
-  const fraction1 = `${numerator1}/${denominator1}`;
-  const fraction2 = `${numerator2}/${denominator2}`;
-  const answer = answerDenominator === 1 ? answerNumerator : `${answerNumerator}/${answerDenominator}`;
+  let answer;
+  if (op === '+') {
+    answer = num1 + num2;
+    if (answer > 999) return generate_3_2(rules);
+  } else {
+    if (num1 < num2) return generate_3_2(rules);
+    answer = num1 - num2;
+  }
+  
+  return createQuestion(num1, op, num2, answer, op === '+' ? 'addition' : 'subtraction');
+}
+
+/**
+ * 3.3 - 两位数乘一位数
+ */
+function generate_3_3(rules) {
+  const num1 = randomInt(10, rules.multiplicandMax);
+  const num2 = randomInt(2, rules.multiplierMax);
+  return createQuestion(num1, '×', num2, num1 * num2, 'multiplication');
+}
+
+/**
+ * 3.4 - 整百整十数除以一位数
+ */
+function generate_3_4(rules) {
+  const divisor = randomInt(2, rules.divisorMax);
+  const quotient = randomInt(10, 99) * 10;
+  const dividend = divisor * quotient;
+  if (dividend < rules.dividendMin || dividend > rules.dividendMax) {
+    return generate_3_4(rules);
+  }
+  return createQuestion(dividend, '÷', divisor, quotient, 'division');
+}
+
+/**
+ * 3.5 - 两位数除以一位数
+ */
+function generate_3_5(rules) {
+  const divisor = randomInt(2, rules.divisorMax);
+  const quotient = randomInt(2, Math.floor(rules.dividendMax / divisor));
+  const dividend = divisor * quotient;
+  return createQuestion(dividend, '÷', divisor, quotient, 'division');
+}
+
+/**
+ * 3.6 - 带括号简单混合
+ */
+function generate_3_6(rules) {
+  const num1 = randomInt(10, 50);
+  const num2 = randomInt(5, num1);
+  const num3 = randomInt(2, 9);
+  
+  const ops = ['+', '-', '×', '÷'];
+  const op1 = ops[randomInt(0, 1)]; // 括号内只用加减
+  const op2 = ops[randomInt(2, 3)]; // 括号外用乘除
+  
+  let result1;
+  if (op1 === '+') {
+    result1 = num1 + num2;
+  } else {
+    result1 = num1 - num2;
+    if (result1 <= 0) return generate_3_6(rules);
+  }
+  
+  let answer;
+  if (op2 === '×') {
+    answer = result1 * num3;
+  } else {
+    // 确保整除
+    if (result1 % num3 !== 0) return generate_3_6(rules);
+    answer = result1 / num3;
+  }
+  
+  const expression = `(${num1} ${op1} ${num2}) ${op2} ${num3}`;
+  return {
+    expression: expression,
+    displayQuestion: `${expression} = ?`,
+    question: expression,
+    answer: answer,
+    type: 'mixed',
+    operators: [op1, op2]
+  };
+}
+
+/**
+ * 3.7 - 乘除混合
+ */
+function generate_3_7(rules) {
+  const num1 = randomInt(2, 9);
+  const num2 = randomInt(2, 9);
+  const num3 = randomInt(2, 9);
+  
+  const product = num1 * num2;
+  if (product % num3 !== 0) return generate_3_7(rules);
+  
+  const answer = product / num3;
+  const expression = `${num1} × ${num2} ÷ ${num3}`;
   
   return {
-    question: `${fraction1} ${operator} ${fraction2}`,
-    displayQuestion: `${fraction1} ${operator} ${fraction2} = ?`,
-    answer: answer.toString(),
-    type: 'fraction',
-    fractions: [fraction1, fraction2],
+    expression: expression,
+    displayQuestion: `${expression} = ?`,
+    question: expression,
+    answer: answer,
+    type: 'mixed',
+    operators: ['×', '÷']
+  };
+}
+
+/**
+ * 3.8 - 单位换算口算
+ */
+function generate_3_8(rules) {
+  const conversions = [
+    { from: 1, unit1: '米', unit2: '厘米', to: 100, desc: '1米 = □厘米' },
+    { from: 1, unit1: '千米', unit2: '米', to: 1000, desc: '1千米 = □米' },
+    { from: 1, unit1: '千克', unit2: '克', to: 1000, desc: '1千克 = □克' },
+    { from: 1, unit1: '时', unit2: '分', to: 60, desc: '1时 = □分' },
+    { from: 1, unit1: '分', unit2: '秒', to: 60, desc: '1分 = □秒' }
+  ];
+  
+  const conv = conversions[randomInt(0, conversions.length - 1)];
+  const expression = `${conv.from}${conv.unit1} = □${conv.unit2}`;
+  
+  return {
+    expression: expression,
+    displayQuestion: expression,
+    question: expression,
+    answer: conv.to,
+    type: 'unit_conversion',
+    unit1: conv.unit1,
+    unit2: conv.unit2
+  };
+}
+
+// ============== 四年级及以上题型生成器 ==============
+
+/**
+ * 通用生成器 - 根据规则自动适配
+ */
+function generateByRules(categoryId, rules) {
+  // 根据categoryId前缀调用对应生成器
+  const generatorMap = {
+    '1_1': generate_1_1, '1_2': generate_1_2, '1_3': generate_1_3, '1_4': generate_1_4,
+    '1_5': generate_1_5, '1_6': generate_1_6, '1_7': generate_1_7, '1_8': generate_1_8,
+    '1_9': generate_1_9, '1_10': generate_1_10,
+    '2_1': generate_2_1, '2_2': generate_2_2, '2_3': generate_2_3, '2_4': generate_2_4,
+    '2_5': generate_2_5, '2_6': generate_2_6, '2_7': generate_2_7, '2_8': generate_2_8,
+    '2_9': generate_2_9,
+    '3_1': generate_3_1, '3_2': generate_3_2, '3_3': generate_3_3, '3_4': generate_3_4,
+    '3_5': generate_3_5, '3_6': generate_3_6, '3_7': generate_3_7, '3_8': generate_3_8
+  };
+  
+  const generator = generatorMap[categoryId];
+  if (generator) {
+    return generator(rules);
+  }
+  
+  // 默认生成器（四年级及以上使用简化版本）
+  return generateSimpleQuestion(rules);
+}
+
+/**
+ * 简化生成器（用于四年级及以上）
+ */
+function generateSimpleQuestion(rules) {
+  const operators = rules.operators || ['+'];
+  const op = operators[randomInt(0, operators.length - 1)];
+  
+  let num1, num2, answer;
+  
+  switch(op) {
+    case '+':
+      num1 = randomInt(rules.minValue || 1, rules.maxValue || 100);
+      num2 = randomInt(rules.minValue || 1, rules.maxValue || 100);
+      answer = num1 + num2;
+      break;
+    case '-':
+      num1 = randomInt((rules.minValue || 1) + 10, rules.maxValue || 100);
+      num2 = randomInt(rules.minValue || 1, num1);
+      answer = num1 - num2;
+      break;
+    case '×':
+      num1 = randomInt(rules.minValue || 1, rules.multiplicandMax || 99);
+      num2 = randomInt(rules.minValue || 1, rules.multiplierMax || 9);
+      answer = num1 * num2;
+      break;
+    case '÷':
+      num2 = randomInt(2, rules.divisorMax || 9);
+      const quotient = randomInt(2, 99);
+      num1 = num2 * quotient;
+      answer = quotient;
+      break;
+    default:
+      num1 = 10;
+      num2 = 5;
+      answer = 15;
+  }
+  
+  return createQuestion(num1, op, num2, answer, getTypeByOperator(op));
+}
+
+/**
+ * 创建标准题目对象
+ */
+function createQuestion(num1, operator, num2, answer, type) {
+  const expression = `${num1} ${operator} ${num2}`;
+  return {
+    expression: expression,
+    displayQuestion: `${expression} = ?`,
+    question: expression,
+    answer: answer,
+    type: type,
+    operands: [num1, num2],
     operator: operator
   };
 }
 
 /**
- * 生成比较大小题目
+ * 根据运算符获取题型
  */
-function generateComparison(rules) {
-  const { minValue = 0, maxValue = 100 } = rules;
-  
-  const num1 = randomInt(minValue, maxValue);
-  const num2 = randomInt(minValue, maxValue);
-  
-  let answer;
-  if (num1 > num2) answer = '>';
-  else if (num1 < num2) answer = '<';
-  else answer = '=';
-  
-  const expression = `${num1} ○ ${num2}`;
-  
-  return {
-    expression: expression,
-    displayQuestion: expression,  // 比较大小不需要 = ?
-    question: expression,
-    answer: answer,
-    type: 'comparison',
-    operands: [num1, num2],
-    operator: '○'
-  };
+function getTypeByOperator(op) {
+  const typeMap = { '+': 'addition', '-': 'subtraction', '×': 'multiplication', '÷': 'division' };
+  return typeMap[op] || 'mixed';
 }
 
 /**
@@ -342,34 +604,7 @@ function generateQuestion(gradeKey, categoryId) {
   }
   
   const rules = category.rules;
-  const operators = rules.operators || [];
-  
-  // 根据题型ID和规则选择生成器
-  if (categoryId.includes('addition')) {
-    return generateAddition(rules);
-  } else if (categoryId.includes('subtraction')) {
-    return generateSubtraction(rules);
-  } else if (categoryId.includes('multiplication')) {
-    return generateMultiplication(rules);
-  } else if (categoryId === 'mixed_operations' || categoryId === 'mixed_operations_advanced' || categoryId === 'mixed_advanced') {
-    return generateMixedOperation(rules);
-  } else if (categoryId.includes('decimal')) {
-    return generateDecimalOperation(rules);
-  } else if (categoryId.includes('fraction')) {
-    return generateFractionOperation(rules);
-  } else if (operators.length === 1) {
-    // 单一运算符
-    switch(operators[0]) {
-      case '+': return generateAddition(rules);
-      case '-': return generateSubtraction(rules);
-      case '×': return generateMultiplication(rules);
-      case '÷': return generateDivision(rules);
-      default: return generateComparison(rules);
-    }
-  } else {
-    // 多运算符混合
-    return generateMixedOperation(rules);
-  }
+  return generateByRules(categoryId, rules);
 }
 
 /**
@@ -380,7 +615,7 @@ function generateQuestions(gradeKey, categoryId, count = 10) {
   const usedQuestions = new Set();
   
   let attempts = 0;
-  const maxAttempts = count * 10; // 防止无限循环
+  const maxAttempts = count * 10;
   
   while (questions.length < count && attempts < maxAttempts) {
     attempts++;
@@ -389,7 +624,6 @@ function generateQuestions(gradeKey, categoryId, count = 10) {
       const question = generateQuestion(gradeKey, categoryId);
       const questionKey = question.question;
       
-      // 避免重复题目
       if (!usedQuestions.has(questionKey)) {
         questions.push({
           ...question,

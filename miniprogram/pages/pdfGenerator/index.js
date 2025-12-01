@@ -279,7 +279,7 @@ Page({
 
   // 生成题目
   async generateQuestions() {
-    const { selectedGrade, selectedCategories, questionCount } = this.data;
+    const { selectedGrade, selectedCategories, questionCount, smartAllocation } = this.data;
     
     // 检查是否初始化了云开发
     const hasCloud = typeof wx.cloud !== 'undefined' && wx.cloud;
@@ -289,12 +289,19 @@ Page({
       return this.generateQuestionsLocally();
     }
     
+    // 如果启用智能分配，调用smartGenerate云函数
+    if (smartAllocation) {
+      console.log('使用智能分配模式生成题目');
+      return this.generateQuestionsWithSmartAllocation();
+    }
+    
+    // 否则使用原有的多题型混合生成
     return new Promise((resolve, reject) => {
       wx.cloud.callFunction({
         name: 'gradeEngine',
         data: {
           action: 'generateQuestions',
-          gradeKey: this.convertToCloudFormat(selectedGrade),
+          gradeKey: selectedGrade,
           categories: selectedCategories,
           count: questionCount
         },
@@ -315,6 +322,58 @@ Page({
         fail: (err) => {
           console.error('云函数调用失败:', err);
           // 使用本地生成作为降级方案
+          const questions = this.generateQuestionsLocally();
+          this.setData({ questions });
+          resolve(questions);
+        }
+      });
+    });
+  },
+
+  // 智能分配模式生成题目
+  generateQuestionsWithSmartAllocation() {
+    const { selectedGrade, questionCount } = this.data;
+    
+    return new Promise((resolve, reject) => {
+      wx.cloud.callFunction({
+        name: 'gradeEngine',
+        data: {
+          action: 'smartGenerate',
+          gradeKey: selectedGrade,
+          count: questionCount
+        },
+        success: (res) => {
+          console.log('智能分配云函数返回:', res);
+          
+          if (res.result && res.result.success && res.result.data) {
+            const { questions, allocation } = res.result.data;
+            
+            console.log('智能分配方案:', allocation);
+            console.log(`生成题目总数: ${questions.length}`);
+            
+            // 显示分配详情
+            const allocationInfo = allocation.map(item => 
+              `${item.categoryName}:${item.count}题`
+            ).join(', ');
+            
+            Message.info({
+              context: this,
+              offset: [20, 32],
+              duration: 3000,
+              content: `智能分配完成！${allocationInfo}`
+            });
+            
+            this.setData({ questions });
+            resolve(questions);
+          } else {
+            console.log('智能分配失败，使用本地生成');
+            const questions = this.generateQuestionsLocally();
+            this.setData({ questions });
+            resolve(questions);
+          }
+        },
+        fail: (err) => {
+          console.error('智能分配云函数调用失败:', err);
           const questions = this.generateQuestionsLocally();
           this.setData({ questions });
           resolve(questions);
@@ -461,18 +520,5 @@ Page({
   getGradeLabel(gradeValue) {
     const grade = this.data.gradeOptions.find(g => g.value === gradeValue);
     return grade ? grade.label : '一年级';
-  },
-
-  // 转换年级格式
-  convertToCloudFormat(gradeKey) {
-    const cloudMapping = {
-      'grade_1': 'grade_1_2',
-      'grade_2': 'grade_1_2',
-      'grade_3': 'grade_3_4',
-      'grade_4': 'grade_3_4',
-      'grade_5': 'grade_5_6',
-      'grade_6': 'grade_5_6'
-    };
-    return cloudMapping[gradeKey] || 'grade_1_2';
   }
 });

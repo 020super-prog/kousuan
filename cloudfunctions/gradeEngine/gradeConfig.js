@@ -1,258 +1,397 @@
 /**
  * 年级题型配置数据库
- * 基于图片中的教学大纲要求
+ * 基于小学1-6年级口算引擎题型拆解大纲
  */
 
 const GRADE_CONFIG = {
-  // 1-2年级（第一学段）
-  'grade_1_2': {
-    name: '一二年级',
+  // 一年级 (100以内加减法基础)
+  'grade_1': {
+    name: '一年级',
     level: 1,
     categories: [
       {
-        id: 'addition',
-        name: '加法',
-        description: '20以内进位/连进位加法；两位数加一位数/整十数',
-        rules: {
-          operands: 2,
-          operators: ['+'],
-          minValue: 0,
-          maxValue: 20,
-          allowCarry: true,
-          allowMultiDigit: true,
-          examples: ['8+7', '15+6', '34+5', '50+12']
-        },
-        difficulty: 'easy'
+        id: '1_1',
+        name: '10以内加法',
+        description: '如: 3 + 5',
+        rules: { minValue: 0, maxValue: 10, operators: ['+'], allowCarry: false },
+        difficulty: 'easy', weight: 2
       },
       {
-        id: 'subtraction',
-        name: '减法',
-        description: '20以内退位的借位；两位数的位值分解',
-        rules: {
-          operands: 2,
-          operators: ['-'],
-          minValue: 0,
-          maxValue: 20,
-          allowBorrow: true,
-          resultPositive: true,
-          examples: ['12-5', '10=7+( )', '( )+10=( )']
-        },
-        difficulty: 'easy'
+        id: '1_2',
+        name: '10以内减法',
+        description: '如: 9 - 6',
+        rules: { minValue: 0, maxValue: 10, operators: ['-'], allowBorrow: false },
+        difficulty: 'easy', weight: 2
       },
       {
-        id: 'measurement_basic',
-        name: '单位换算',
-        description: '长度（米/厘米）；人民币（元/角/分）；时间（整时/半时，时/分）',
-        rules: {
-          units: {
-            length: ['米', '厘米'],
-            money: ['元', '角', '分'],
-            time: ['时', '分']
-          },
-          examples: ['1米=100厘米', '1元=10角', '1时=60分']
-        },
-        difficulty: 'easy'
+        id: '1_3',
+        name: '凑十法加法',
+        description: '如: 7 + □ = 10',
+        rules: { target: 10, operators: ['+'], fillBlank: true },
+        difficulty: 'easy', weight: 1
+      },
+      {
+        id: '1_4',
+        name: '20以内不进位加法',
+        description: '如: 12 + 5',
+        rules: { minValue: 10, maxValue: 20, operators: ['+'], allowCarry: false },
+        difficulty: 'easy', weight: 2
+      },
+      {
+        id: '1_5',
+        name: '20以内不退位减法',
+        description: '如: 18 - 6',
+        rules: { minValue: 10, maxValue: 20, operators: ['-'], allowBorrow: false },
+        difficulty: 'easy', weight: 2
+      },
+      {
+        id: '1_6',
+        name: '20以内进位加法',
+        description: '如: 8 + 7',
+        rules: { minValue: 0, maxValue: 20, operators: ['+'], allowCarry: true, requireCarry: true },
+        difficulty: 'medium', weight: 3
+      },
+      {
+        id: '1_7',
+        name: '20以内退位减法',
+        description: '如: 15 - 9',
+        rules: { minValue: 10, maxValue: 20, operators: ['-'], allowBorrow: true, requireBorrow: true },
+        difficulty: 'medium', weight: 3
+      },
+      {
+        id: '1_8',
+        name: '整十数加整十数',
+        description: '如: 30 + 40',
+        rules: { minValue: 10, maxValue: 90, operators: ['+'], tensOnly: true },
+        difficulty: 'easy', weight: 1
+      },
+      {
+        id: '1_9',
+        name: '整十数减整十数',
+        description: '如: 70 - 20',
+        rules: { minValue: 10, maxValue: 90, operators: ['-'], tensOnly: true },
+        difficulty: 'easy', weight: 1
+      },
+      {
+        id: '1_10',
+        name: '100以内一步混合',
+        description: '连加/连减/加减混合, 2步',
+        rules: { minValue: 0, maxValue: 20, operators: ['+', '-'], steps: 2 },
+        difficulty: 'medium', weight: 2
       }
     ],
-    practiceRange: {
-      questionCount: [10, 20, 30],
-      timeLimit: 300, // 5分钟
-      targetAccuracy: 80
-    }
+    practiceRange: { questionCount: [10, 20, 30], timeLimit: 300, targetAccuracy: 80 }
   },
 
-  // 3-4年级（第二学段）
-  'grade_3_4': {
-    name: '三四年级',
+  // 二年级 (100以内加减法提高与表内乘除法)
+  'grade_2': {
+    name: '二年级',
     level: 2,
     categories: [
       {
-        id: 'addition_advanced',
-        name: '加法',
-        description: '三位数以内的连续进位加法',
-        rules: {
-          operands: 2,
-          operators: ['+'],
-          minValue: 0,
-          maxValue: 999,
-          allowCarry: true,
-          multipleCarry: true,
-          examples: ['234+567', '456+789']
-        },
-        difficulty: 'medium'
+        id: '2_1',
+        name: '100以内不进位加法',
+        description: '两位数加两位数, 如: 34 + 52',
+        rules: { minValue: 10, maxValue: 99, operators: ['+'], allowCarry: false },
+        difficulty: 'easy', weight: 2
       },
       {
-        id: 'subtraction_advanced',
-        name: '减法',
-        description: '三位数四位数的连续借位分解',
-        rules: {
-          operands: 2,
-          operators: ['-'],
-          minValue: 0,
-          maxValue: 9999,
-          allowBorrow: true,
-          multipleBorrow: true,
-          examples: ['1234-567', '5000-2345']
-        },
-        difficulty: 'medium'
+        id: '2_2',
+        name: '100以内进位加法',
+        description: '两位数加两位数, 如: 48 + 35',
+        rules: { minValue: 10, maxValue: 99, operators: ['+'], allowCarry: true, requireCarry: true },
+        difficulty: 'medium', weight: 3
       },
       {
-        id: 'multiplication',
-        name: '乘除法',
-        description: '表内乘除法；两位数乘一位数；整百数乘一位数',
-        rules: {
-          operands: 2,
-          operators: ['×', '÷'],
-          multiplicandMax: 99,
-          multiplierMax: 9,
-          allowZero: false,
-          examples: ['6×9', '45÷5', '23×3', '400×2']
-        },
-        difficulty: 'medium'
+        id: '2_3',
+        name: '100以内不退位减法',
+        description: '两位数减两位数, 如: 76 - 34',
+        rules: { minValue: 10, maxValue: 99, operators: ['-'], allowBorrow: false },
+        difficulty: 'easy', weight: 2
       },
       {
-        id: 'mixed_operations',
-        name: '混合运算',
-        description: '两步应用乘除加减的混合运算',
-        rules: {
-          operands: 3,
-          operators: ['+', '-', '×', '÷'],
-          steps: 2,
-          allowParentheses: false,
-          examples: ['3+8×5', '20-15÷3', '3×4-5', '2+0-1']
-        },
-        difficulty: 'medium'
+        id: '2_4',
+        name: '100以内退位减法',
+        description: '两位数减两位数, 如: 53 - 17',
+        rules: { minValue: 10, maxValue: 99, operators: ['-'], allowBorrow: true, requireBorrow: true },
+        difficulty: 'medium', weight: 3
       },
       {
-        id: 'measurement_intermediate',
-        name: '单位换算',
-        description: '长度（毫米/分米/千米）；重量（吨/千克/克）；时间（秒/分/时/日）',
-        rules: {
-          units: {
-            length: ['毫米', '厘米', '分米', '米', '千米'],
-            weight: ['克', '千克', '吨'],
-            time: ['秒', '分', '时', '日']
-          },
-          examples: ['1千米=1000米', '1千克=1000克', '1时=60分']
-        },
-        difficulty: 'medium'
+        id: '2_5',
+        name: '表内乘法',
+        description: '如: 6 × 9',
+        rules: { minValue: 1, maxValue: 9, operators: ['×'] },
+        difficulty: 'medium', weight: 3
       },
       {
-        id: 'fractions_basic',
-        name: '小数运算',
-        description: '一位小数的加减乘除',
-        rules: {
-          operands: 2,
-          operators: ['+', '-', '×', '÷'],
-          decimalPlaces: 1,
-          maxValue: 100,
-          examples: ['12.4+8', '0.5+0.3', '4.9+3']
-        },
-        difficulty: 'medium'
+        id: '2_6',
+        name: '表内除法',
+        description: '如: 54 ÷ 6',
+        rules: { minValue: 1, maxValue: 9, operators: ['÷'], exactDivision: true },
+        difficulty: 'medium', weight: 3
       },
       {
-        id: 'fractions_division',
-        name: '分数运算',
-        description: '同分母分数的加减法',
-        rules: {
-          operands: 2,
-          operators: ['+', '-'],
-          sameDenominator: true,
-          maxNumerator: 20,
-          maxDenominator: 20,
-          examples: ['1/5+2/5', '3/4-1/4']
-        },
-        difficulty: 'medium'
+        id: '2_7',
+        name: '简单乘加/乘减',
+        description: '如: 3 × 5 + 4',
+        rules: { minValue: 1, maxValue: 9, operators: ['×', '+', '-'], steps: 2, pattern: 'multiply_first' },
+        difficulty: 'medium', weight: 2
+      },
+      {
+        id: '2_8',
+        name: '简单除加/除减',
+        description: '如: 20 ÷ 4 - 2',
+        rules: { minValue: 1, maxValue: 9, operators: ['÷', '+', '-'], steps: 2, pattern: 'divide_first' },
+        difficulty: 'medium', weight: 2
+      },
+      {
+        id: '2_9',
+        name: '两位数加减整十数/一位数',
+        description: '如: 56 + 4 或 85 - 30',
+        rules: { minValue: 10, maxValue: 99, operators: ['+', '-'], specialPattern: true },
+        difficulty: 'easy', weight: 1
       }
     ],
-    practiceRange: {
-      questionCount: [20, 30, 50],
-      timeLimit: 600, // 10分钟
-      targetAccuracy: 85
-    }
+    practiceRange: { questionCount: [20, 30, 40], timeLimit: 400, targetAccuracy: 82 }
   },
 
-  // 5-6年级（第三学段）
-  'grade_5_6': {
-    name: '五六年级',
+  // 三年级 (三位数加减法与两位数乘除法引入)
+  'grade_3': {
+    name: '三年级',
     level: 3,
     categories: [
       {
-        id: 'mixed_advanced',
-        name: '整数运算',
-        description: '运用混合算律的简便运算；较大整十/整百数的乘除法',
-        rules: {
-          operands: [3, 4],
-          operators: ['+', '-', '×', '÷'],
-          allowParentheses: true,
-          useProperties: ['distributive', 'associative', 'commutative'],
-          examples: ['25×4+8.99+36', '60÷50']
-        },
-        difficulty: 'hard'
+        id: '3_1',
+        name: '三位数加减整百数',
+        description: '如: 400 + 300, 750 - 50',
+        rules: { minValue: 100, maxValue: 999, operators: ['+', '-'], hundredsOnly: true },
+        difficulty: 'easy', weight: 1
       },
       {
-        id: 'decimals_advanced',
-        name: '小数运算',
-        description: '一位/两位小数的加减乘除',
-        rules: {
-          operands: 2,
-          operators: ['+', '-', '×', '÷'],
-          decimalPlaces: [1, 2],
-          maxValue: 1000,
-          examples: ['25.1+12.4', '8-0.5', '0.3×4', '0.9÷3']
-        },
-        difficulty: 'hard'
+        id: '3_2',
+        name: '几百几十加减几百几十',
+        description: '如: 230 + 150, 680 - 450',
+        rules: { minValue: 100, maxValue: 999, operators: ['+', '-'], noOnes: true },
+        difficulty: 'medium', weight: 2
       },
       {
-        id: 'fractions_advanced',
-        name: '分数运算',
-        description: '同分母分数的加减法',
-        rules: {
-          operands: 2,
-          operators: ['+', '-'],
-          sameDenominator: false,
-          needSimplify: true,
-          maxNumerator: 100,
-          maxDenominator: 100,
-          examples: ['51+53', '87-83']
-        },
-        difficulty: 'hard'
+        id: '3_3',
+        name: '两位数乘一位数',
+        description: '不进位和简单进位, 如: 34 × 2, 17 × 5',
+        rules: { multiplicandMax: 99, multiplierMax: 9, operators: ['×'] },
+        difficulty: 'medium', weight: 3
       },
       {
-        id: 'mixed_operations_advanced',
-        name: '混合运算',
-        description: '涉及/减法并用/除法/小数/分数的混合运算',
-        rules: {
-          operands: [3, 4, 5],
-          operators: ['+', '-', '×', '÷'],
-          allowDecimals: true,
-          allowFractions: true,
-          allowParentheses: true,
-          steps: [2, 3],
-          examples: ['(12+8)-4', '30÷(10-4)', '3.5米-(1厘米; 2千5百万厘米/1厘米)', '(12+8)-4.30÷(10-4)']
-        },
-        difficulty: 'hard'
+        id: '3_4',
+        name: '整百整十数除以一位数',
+        description: '如: 420 ÷ 7, 800 ÷ 4',
+        rules: { dividendMin: 100, dividendMax: 900, divisorMax: 9, operators: ['÷'], exactDivision: true },
+        difficulty: 'medium', weight: 2
       },
       {
-        id: 'measurement_advanced',
-        name: '单位换算',
-        description: '面积/体积容积（公顷/平方千米）；容量（升/毫升）；体积（立方米/立方厘米）',
-        rules: {
-          units: {
-            area: ['平方厘米', '平方分米', '平方米', '公顷', '平方千米'],
-            volume: ['立方厘米', '立方分米', '立方米'],
-            capacity: ['毫升', '升']
-          },
-          examples: ['1平方千米=1000000平方米', '1立方米=1000立方分米']
-        },
-        difficulty: 'hard'
+        id: '3_5',
+        name: '两位数除以一位数',
+        description: '简单不带余数或带简单余数, 如: 96 ÷ 3, 55 ÷ 5',
+        rules: { dividendMax: 99, divisorMax: 9, operators: ['÷'], allowRemainder: true },
+        difficulty: 'medium', weight: 3
+      },
+      {
+        id: '3_6',
+        name: '带括号简单混合',
+        description: '如: (50 - 20) ÷ 5',
+        rules: { minValue: 1, maxValue: 50, operators: ['+', '-', '×', '÷'], steps: 2, allowParentheses: true },
+        difficulty: 'hard', weight: 2
+      },
+      {
+        id: '3_7',
+        name: '乘除混合',
+        description: '如: 3 × 6 ÷ 2',
+        rules: { minValue: 1, maxValue: 9, operators: ['×', '÷'], steps: 2 },
+        difficulty: 'hard', weight: 2
+      },
+      {
+        id: '3_8',
+        name: '单位换算口算',
+        description: '简单时间/长度/质量单位换算',
+        rules: { type: 'unit_conversion', units: ['时间', '长度', '质量'] },
+        difficulty: 'easy', weight: 1
       }
     ],
-    practiceRange: {
-      questionCount: [30, 50, 100],
-      timeLimit: 900, // 15分钟
-      targetAccuracy: 90
-    }
+    practiceRange: { questionCount: [30, 40, 50], timeLimit: 500, targetAccuracy: 85 }
+  },
+
+  // 四年级 (整数四则混合运算与小数基础)
+  'grade_4': {
+    name: '四年级',
+    level: 4,
+    categories: [
+      {
+        id: '4_1',
+        name: '大数四则运算',
+        description: '整百/整千, 如: 600 × 50, 4900 ÷ 70',
+        rules: { minValue: 100, maxValue: 9999, operators: ['+', '-', '×', '÷'], largeNumbers: true },
+        difficulty: 'medium', weight: 2
+      },
+      {
+        id: '4_2',
+        name: '加法/乘法交换律和结合律速算',
+        description: '如: 28 + 55 + 72, 25 × 16',
+        rules: { useProperties: ['commutative', 'associative'], operators: ['+', '×'] },
+        difficulty: 'hard', weight: 2
+      },
+      {
+        id: '4_3',
+        name: '乘法分配律速算',
+        description: '如: 102 × 5, 99 × 8 + 8',
+        rules: { useProperties: ['distributive'], operators: ['×', '+'] },
+        difficulty: 'hard', weight: 2
+      },
+      {
+        id: '4_4',
+        name: '小数一位加减法',
+        description: '如: 3.5 + 1.2, 4.8 - 0.5',
+        rules: { decimalPlaces: 1, maxValue: 10, operators: ['+', '-'] },
+        difficulty: 'medium', weight: 2
+      },
+      {
+        id: '4_5',
+        name: '小数与整数加减',
+        description: '如: 5 + 0.9, 1.7 - 1',
+        rules: { decimalPlaces: 1, maxValue: 10, operators: ['+', '-'], mixedTypes: true },
+        difficulty: 'medium', weight: 2
+      },
+      {
+        id: '4_6',
+        name: '整数四则运算(不含括号)',
+        description: '如: 40 - 2 × 5 + 6',
+        rules: { minValue: 1, maxValue: 50, operators: ['+', '-', '×', '÷'], steps: 3, allowParentheses: false },
+        difficulty: 'hard', weight: 3
+      },
+      {
+        id: '4_7',
+        name: '整数四则运算(含括号)',
+        description: '如: 100 ÷ (5 + 5) × 2',
+        rules: { minValue: 1, maxValue: 50, operators: ['+', '-', '×', '÷'], steps: 3, allowParentheses: true },
+        difficulty: 'hard', weight: 3
+      }
+    ],
+    practiceRange: { questionCount: [40, 50, 60], timeLimit: 600, targetAccuracy: 87 }
+  },
+
+  // 五年级 (小数乘除法与分数基础)
+  'grade_5': {
+    name: '五年级',
+    level: 5,
+    categories: [
+      {
+        id: '5_1',
+        name: '小数乘法',
+        description: '简单小数乘一位数或整十数, 如: 0.8 × 6, 1.5 × 10',
+        rules: { decimalPlaces: 1, multiplierMax: 10, operators: ['×'] },
+        difficulty: 'medium', weight: 2
+      },
+      {
+        id: '5_2',
+        name: '小数除法',
+        description: '简单被除数是小数的除法, 如: 4.2 ÷ 7, 18 ÷ 10',
+        rules: { decimalPlaces: 1, divisorMax: 10, operators: ['÷'] },
+        difficulty: 'medium', weight: 2
+      },
+      {
+        id: '5_3',
+        name: '小数混合运算',
+        description: '小数加减乘除两步混合, 如: 2.5 + 0.5 × 2',
+        rules: { decimalPlaces: 1, maxValue: 10, operators: ['+', '-', '×', '÷'], steps: 2 },
+        difficulty: 'hard', weight: 3
+      },
+      {
+        id: '5_4',
+        name: '同分母分数加减法',
+        description: '结果需化简, 如: 3/5 + 1/5, 7/8 - 3/8',
+        rules: { sameDenominator: true, maxDenominator: 10, operators: ['+', '-'], needSimplify: true },
+        difficulty: 'medium', weight: 2
+      },
+      {
+        id: '5_5',
+        name: '异分母分数加减法',
+        description: '分母倍数关系, 简单通分, 如: 1/2 + 1/4, 5/6 - 1/3',
+        rules: { sameDenominator: false, maxDenominator: 12, operators: ['+', '-'], multipleRelation: true },
+        difficulty: 'hard', weight: 3
+      },
+      {
+        id: '5_6',
+        name: '分数与整数加减',
+        description: '如: 1 + 2/3, 2 - 1/4',
+        rules: { maxDenominator: 10, operators: ['+', '-'], mixedTypes: true },
+        difficulty: 'medium', weight: 2
+      },
+      {
+        id: '5_7',
+        name: '解简单方程',
+        description: '加减乘除, 如: x + 5 = 12, 3x = 18',
+        rules: { maxValue: 20, operators: ['+', '-', '×', '÷'], equationType: 'simple' },
+        difficulty: 'hard', weight: 2
+      }
+    ],
+    practiceRange: { questionCount: [40, 50, 70], timeLimit: 700, targetAccuracy: 88 }
+  },
+
+  // 六年级 (分数四则混合运算与百分数)
+  'grade_6': {
+    name: '六年级',
+    level: 6,
+    categories: [
+      {
+        id: '6_1',
+        name: '分数乘法',
+        description: '考察约分, 如: 1/3 × 6/7, 4 × 3/8',
+        rules: { maxNumerator: 10, maxDenominator: 12, operators: ['×'], needSimplify: true },
+        difficulty: 'hard', weight: 3
+      },
+      {
+        id: '6_2',
+        name: '分数除法',
+        description: '考察倒数与乘法转换, 如: 2/5 ÷ 4, 1 ÷ 3/4',
+        rules: { maxNumerator: 10, maxDenominator: 12, operators: ['÷'], reciprocal: true },
+        difficulty: 'hard', weight: 3
+      },
+      {
+        id: '6_3',
+        name: '分数四则混合运算',
+        description: '至少两步的混合运算, 如: 1/2 × 4 + 1/4',
+        rules: { maxNumerator: 10, maxDenominator: 12, operators: ['+', '-', '×', '÷'], steps: 2 },
+        difficulty: 'hard', weight: 3
+      },
+      {
+        id: '6_4',
+        name: '分数、小数、百分数互化',
+        description: '常见数的互化, 如: 0.25 = □% = □ (分数)',
+        rules: { type: 'conversion', commonValues: true },
+        difficulty: 'medium', weight: 2
+      },
+      {
+        id: '6_5',
+        name: '简单的百分数应用',
+        description: '求百分之几是多少, 如: 20 的 10% 是多少',
+        rules: { maxValue: 100, percentageMax: 100, operators: ['×'] },
+        difficulty: 'medium', weight: 2
+      },
+      {
+        id: '6_6',
+        name: '求比值/化简比',
+        description: '如: 1/2 : 1/4 的比值',
+        rules: { type: 'ratio', maxValue: 12, needSimplify: true },
+        difficulty: 'hard', weight: 2
+      },
+      {
+        id: '6_7',
+        name: '倒数口算',
+        description: '求一个数的倒数, 如: 5 的倒数是 □',
+        rules: { type: 'reciprocal', maxValue: 20 },
+        difficulty: 'easy', weight: 1
+      }
+    ],
+    practiceRange: { questionCount: [50, 70, 100], timeLimit: 900, targetAccuracy: 90 }
   }
 };
 
@@ -285,7 +424,8 @@ function getCategoriesByGrade(gradeKey) {
     id: cat.id,
     name: cat.name,
     description: cat.description,
-    difficulty: cat.difficulty
+    difficulty: cat.difficulty,
+    weight: cat.weight || 1
   }));
 }
 
@@ -298,6 +438,60 @@ function getCategoryRules(gradeKey, categoryId) {
   
   const category = config.categories.find(cat => cat.id === categoryId);
   return category || null;
+}
+
+/**
+ * 智能分配题型权重 - 根据年级和权重随机选择题型
+ * @param {string} gradeKey - 年级键值
+ * @param {number} count - 需要生成的题目总数
+ * @returns {Array} 题型分配列表 [{categoryId, count}]
+ */
+function getSmartAllocation(gradeKey, count) {
+  const config = getGradeConfig(gradeKey);
+  if (!config || !config.categories || config.categories.length === 0) {
+    return [];
+  }
+
+  // 计算总权重
+  const totalWeight = config.categories.reduce((sum, cat) => sum + (cat.weight || 1), 0);
+  
+  // 根据权重分配题目数量
+  const allocation = [];
+  let remaining = count;
+  
+  config.categories.forEach((cat, index) => {
+    const weight = cat.weight || 1;
+    let catCount;
+    
+    if (index === config.categories.length - 1) {
+      // 最后一个题型，分配剩余所有题目
+      catCount = remaining;
+    } else {
+      // 按权重比例分配
+      catCount = Math.round((weight / totalWeight) * count);
+      catCount = Math.max(1, catCount); // 至少1题
+    }
+    
+    if (catCount > 0 && remaining > 0) {
+      catCount = Math.min(catCount, remaining);
+      allocation.push({
+        categoryId: cat.id,
+        categoryName: cat.name,
+        count: catCount,
+        weight: weight
+      });
+      remaining -= catCount;
+    }
+  });
+  
+  // 如果还有剩余题目，随机分配给某个题型
+  while (remaining > 0) {
+    const randomIndex = Math.floor(Math.random() * allocation.length);
+    allocation[randomIndex].count++;
+    remaining--;
+  }
+  
+  return allocation;
 }
 
 /**
@@ -317,5 +511,6 @@ module.exports = {
   getAllGrades,
   getCategoriesByGrade,
   getCategoryRules,
+  getSmartAllocation,
   validateQuestion
 };

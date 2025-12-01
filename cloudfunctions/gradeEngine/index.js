@@ -13,7 +13,8 @@ const {
   getAllGrades, 
   getCategoriesByGrade, 
   getCategoryRules,
-  getGradeConfig 
+  getGradeConfig,
+  getSmartAllocation
 } = require('./gradeConfig');
 
 const { generateQuestions } = require('./questionEngine');
@@ -109,6 +110,48 @@ exports.main = async (event, context) => {
               difficulty: cat.difficulty
             })),
             practiceRange: config.practiceRange
+          }
+        };
+      
+      // 智能分配生成题目
+      case 'smartGenerate':
+        const { gradeKey: smartGrade, count: smartCount = 50 } = data;
+        if (!smartGrade) {
+          return { success: false, error: '缺少参数: gradeKey' };
+        }
+        
+        // 获取智能分配方案
+        const allocation = getSmartAllocation(smartGrade, smartCount);
+        if (!allocation || allocation.length === 0) {
+          return { success: false, error: '无法生成智能分配方案' };
+        }
+        
+        console.log('智能分配方案:', allocation);
+        
+        // 为每个题型生成相应数量的题目
+        const allQuestions = [];
+        for (const item of allocation) {
+          try {
+            const questions = generateQuestions(smartGrade, item.categoryId, item.count);
+            allQuestions.push(...questions);
+          } catch (error) {
+            console.error(`生成题型 ${item.categoryId} 失败:`, error);
+          }
+        }
+        
+        // 打乱题目顺序
+        for (let i = allQuestions.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [allQuestions[i], allQuestions[j]] = [allQuestions[j], allQuestions[i]];
+        }
+        
+        return {
+          success: true,
+          data: {
+            gradeKey: smartGrade,
+            totalCount: allQuestions.length,
+            allocation: allocation,
+            questions: allQuestions
           }
         };
       
