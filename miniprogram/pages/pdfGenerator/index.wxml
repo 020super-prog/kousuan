@@ -25,23 +25,23 @@
       />
     </view>
 
-    <!-- 年级选择 -->
+    <!-- 年级选择 - 3列网格布局 -->
     <view class="config-item">
       <view class="config-label">
         <t-icon name="education" size="32rpx" color="#4A90E2" />
         <text class="label-text">选择年级</text>
       </view>
-      <t-radio-group value="{{selectedGrade}}" bindchange="onGradeChange">
-        <view class="radio-group">
-          <t-radio
-            wx:for="{{gradeOptions}}"
-            wx:key="value"
-            value="{{item.value}}"
-            label="{{item.label}}"
-            class="radio-item"
-          />
+      <view class="grade-grid">
+        <view
+          wx:for="{{gradeOptions}}"
+          wx:key="value"
+          class="grade-item {{selectedGrade === item.value ? 'grade-item-active' : ''}}"
+          bindtap="onGradeSelect"
+          data-grade="{{item.value}}"
+        >
+          <text class="grade-label">{{item.label}}</text>
         </view>
-      </t-radio-group>
+      </view>
     </view>
 
     <!-- 题型选择 -->
@@ -51,11 +51,34 @@
         <text class="label-text">题型选择</text>
         <text class="label-hint">(多选)</text>
       </view>
+      
+      <!-- 智能分配选项 - 高亮推荐 -->
+      <view class="smart-allocation-wrapper">
+        <view 
+          class="smart-allocation-item {{smartAllocation ? 'smart-allocation-active' : ''}}"
+          bindtap="onSmartAllocationToggle"
+        >
+          <view class="smart-badge">
+            <t-icon name="star" size="32rpx" color="#FF6B35" />
+            <text class="smart-badge-text">推荐</text>
+          </view>
+          <view class="smart-content">
+            <t-icon name="lightbulb" size="44rpx" color="{{smartAllocation ? '#FFFFFF' : '#FF6B35'}}" />
+            <text class="smart-label">智能分配</text>
+            <text class="smart-desc">系统自动配比题型</text>
+          </view>
+          <view wx:if="{{smartAllocation}}" class="smart-check-badge">
+            <text class="check-icon">✓</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 题型网格 -->
       <view class="category-grid">
         <view
           wx:for="{{categoryOptions}}"
           wx:key="value"
-          class="category-item {{selectedCategories.indexOf(item.value) > -1 ? 'category-item-active' : ''}}"
+          class="category-item {{selectedCategories.indexOf(item.value) > -1 ? 'category-item-active' : ''}} {{smartAllocation ? 'category-item-disabled' : ''}}"
           bindtap="onCategoryToggle"
           data-category="{{item.value}}"
         >
@@ -90,23 +113,24 @@
       />
     </view>
 
-    <!-- 列数选择 -->
+    <!-- 列数选择 - 4列排列 -->
     <view class="config-item">
       <view class="config-label">
         <t-icon name="view-column" size="32rpx" color="#4A90E2" />
         <text class="label-text">排版列数</text>
       </view>
-      <t-radio-group value="{{columnCount}}" bindchange="onColumnCountChange">
-        <view class="radio-group horizontal">
-          <t-radio
-            wx:for="{{columnOptions}}"
-            wx:key="value"
-            value="{{item.value}}"
-            label="{{item.label}}"
-            class="radio-item"
-          />
+      <view class="column-grid">
+        <view
+          wx:for="{{columnOptions}}"
+          wx:key="value"
+          class="column-item {{columnCount === item.value ? 'column-item-active' : ''}}"
+          bindtap="onColumnSelect"
+          data-column="{{item.value}}"
+        >
+          <t-icon name="view-column" size="36rpx" color="{{columnCount === item.value ? '#FFFFFF' : '#4A90E2'}}" />
+          <text class="column-label">{{item.label}}</text>
         </view>
-      </t-radio-group>
+      </view>
     </view>
 
     <!-- 显示答案 -->

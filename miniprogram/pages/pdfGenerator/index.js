@@ -25,6 +25,9 @@ Page({
     ],
     selectedCategories: ['addition'],
     
+    // 智能分配
+    smartAllocation: false,
+    
     // 题目数量选项
     questionCountOptions: [20, 30, 50, 80, 100],
     questionCount: 50,
@@ -37,7 +40,8 @@ Page({
     columnOptions: [
       { value: 2, label: '2列' },
       { value: 3, label: '3列' },
-      { value: 4, label: '4列' }
+      { value: 4, label: '4列' },
+      { value: 5, label: '5列' }
     ],
     columnCount: 3,
     
@@ -75,15 +79,75 @@ Page({
     console.log('页面显示，当前选中题型:', this.data.selectedCategories);
   },
 
-  // 选择年级
+  // 选择年级 - 网格点击
+  onGradeSelect(e) {
+    const grade = e.currentTarget.dataset.grade;
+    this.setData({ selectedGrade: grade });
+    console.log('选择年级:', grade);
+  },
+
+  // 选择年级 - 兼容原方法
   onGradeChange(e) {
     this.setData({ selectedGrade: e.detail.value });
   },
 
+  // 智能分配切换
+  onSmartAllocationToggle() {
+    const newValue = !this.data.smartAllocation;
+    this.setData({ smartAllocation: newValue });
+    
+    if (newValue) {
+      // 启用智能分配，根据年级自动配置题型
+      const smartCategories = this.getSmartCategories(this.data.selectedGrade);
+      this.setData({ selectedCategories: smartCategories });
+      
+      Message.success({
+        context: this,
+        offset: [20, 32],
+        duration: 2000,
+        content: '已启用智能分配，系统将自动配比题型'
+      });
+    } else {
+      Message.info({
+        context: this,
+        offset: [20, 32],
+        duration: 1500,
+        content: '已关闭智能分配，请手动选择题型'
+      });
+    }
+    
+    console.log('智能分配:', newValue, '题型:', this.data.selectedCategories);
+  },
+
+  // 根据年级获取智能题型配置
+  getSmartCategories(grade) {
+    const gradeConfigs = {
+      'grade_1': ['addition', 'subtraction'],
+      'grade_2': ['addition', 'subtraction', 'mixed'],
+      'grade_3': ['addition', 'subtraction', 'multiplication'],
+      'grade_4': ['multiplication', 'division', 'mixed'],
+      'grade_5': ['multiplication', 'division', 'mixed'],
+      'grade_6': ['addition', 'subtraction', 'multiplication', 'division', 'mixed']
+    };
+    
+    return gradeConfigs[grade] || ['addition'];
+  },
+
   // 选择题型
   onCategoryToggle(e) {
+    // 如果启用了智能分配，禁止手动选择
+    if (this.data.smartAllocation) {
+      Message.warning({
+        context: this,
+        offset: [20, 32],
+        duration: 1500,
+        content: '智能分配模式下无法手动选择题型'
+      });
+      return;
+    }
+    
     const category = e.currentTarget.dataset.category;
-    let selectedCategories = [...this.data.selectedCategories]; // 创建新数组
+    let selectedCategories = [...this.data.selectedCategories];
     const index = selectedCategories.indexOf(category);
     
     console.log('点击题型:', category, '当前选中:', selectedCategories);
@@ -118,7 +182,14 @@ Page({
     this.setData({ questionCount: count });
   },
 
-  // 列数改变
+  // 列数选择 - 网格点击
+  onColumnSelect(e) {
+    const column = parseInt(e.currentTarget.dataset.column);
+    this.setData({ columnCount: column });
+    console.log('选择列数:', column);
+  },
+
+  // 列数改变 - 兼容原方法
   onColumnCountChange(e) {
     const column = parseInt(e.detail.value) || 3;
     console.log('列数改变:', column);

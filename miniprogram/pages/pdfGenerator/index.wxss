@@ -105,6 +105,166 @@
   min-width: 160rpx;
 }
 
+/* ==================== 年级网格布局 (3列) ==================== */
+.grade-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12rpx;
+}
+
+.grade-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx 16rpx;
+  background: #F8F9FA;
+  border: 2rpx solid #E8E8E8;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+}
+
+.grade-item:active {
+  transform: scale(0.96);
+  background: #E8F4FF;
+}
+
+.grade-item-active {
+  background: linear-gradient(135deg, #4A90E2 0%, #5BA3F5 100%) !important;
+  border-color: #4A90E2 !important;
+  box-shadow: 0 4rpx 12rpx rgba(74, 144, 226, 0.3);
+}
+
+.grade-label {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #2C3E50;
+  transition: color 0.3s;
+}
+
+.grade-item-active .grade-label {
+  color: #FFFFFF !important;
+  font-weight: 600;
+}
+
+/* ==================== 智能分配选项 ==================== */
+.smart-allocation-wrapper {
+  margin-bottom: 20rpx;
+}
+
+.smart-allocation-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28rpx 24rpx;
+  background: linear-gradient(135deg, #FFF5EB 0%, #FFE8D6 100%);
+  border: 3rpx solid #FF6B35;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 16rpx rgba(255, 107, 53, 0.2);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.smart-allocation-item::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 60%);
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+.smart-allocation-item:active {
+  transform: scale(0.98);
+}
+
+/* 智能分配选中状态 */
+.smart-allocation-active {
+  background: linear-gradient(135deg, #FF6B35 0%, #FF8C5A 100%) !important;
+  border-color: #E74C3C !important;
+  box-shadow: 0 6rpx 20rpx rgba(255, 107, 53, 0.4) !important;
+}
+
+/* 推荐徽章 */
+.smart-badge {
+  position: absolute;
+  top: 8rpx;
+  right: 8rpx;
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  padding: 6rpx 12rpx;
+  background: linear-gradient(135deg, #FFB347 0%, #FFCC80 100%);
+  border-radius: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(255, 179, 71, 0.4);
+  z-index: 5;
+}
+
+.smart-badge-text {
+  font-size: 20rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+  text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.2);
+}
+
+/* 智能分配内容 */
+.smart-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  z-index: 2;
+}
+
+.smart-label {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #FF6B35;
+  transition: color 0.3s;
+}
+
+.smart-allocation-active .smart-label {
+  color: #FFFFFF;
+}
+
+.smart-desc {
+  font-size: 22rpx;
+  color: #FF8C5A;
+  transition: color 0.3s;
+}
+
+.smart-allocation-active .smart-desc {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* 智能分配选中徽章 */
+.smart-check-badge {
+  position: absolute;
+  top: 8rpx;
+  left: 8rpx;
+  width: 36rpx;
+  height: 36rpx;
+  background: #FFFFFF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  animation: badge-pop 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.smart-check-badge .check-icon {
+  color: #FF6B35;
+}
+
 /* 题型网格 */
 .category-grid {
   display: grid;
@@ -124,6 +284,12 @@
   border-radius: 16rpx;
   transition: all 0.3s ease;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+/* 题型禁用状态（智能分配时） */
+.category-item-disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 /* 未选中状态按压效果 */
@@ -230,6 +396,51 @@
   text-shadow: 0 1rpx 3rpx rgba(0, 0, 0, 0.3);
   transform: scale(1.08);
 }
+
+/* ==================== 列数网格布局 (4列) ==================== */
+.column-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12rpx;
+}
+
+.column-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx 12rpx;
+  background: #F8F9FA;
+  border: 2rpx solid #E8E8E8;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+  gap: 6rpx;
+}
+
+.column-item:active {
+  transform: scale(0.96);
+  background: #E8F4FF;
+}
+
+.column-item-active {
+  background: linear-gradient(135deg, #27AE60 0%, #2ECC71 100%) !important;
+  border-color: #27AE60 !important;
+  box-shadow: 0 4rpx 12rpx rgba(39, 174, 96, 0.3);
+}
+
+.column-label {
+  font-size: 24rpx;
+  font-weight: 500;
+  color: #2C3E50;
+  transition: color 0.3s;
+}
+
+.column-item-active .column-label {
+  color: #FFFFFF !important;
+  font-weight: 600;
+}
+
 
 /* 预览提示 */
 .preview-hint {
